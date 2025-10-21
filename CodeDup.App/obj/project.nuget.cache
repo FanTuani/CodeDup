@@ -1,0 +1,28 @@
+{
+  "version": 2,
+  "dgSpecHash": "n/iqkGKJ/MQ=",
+  "success": true,
+  "projectFilePath": "D:\\Github\\CodeDup\\CodeDup.App\\CodeDup.App.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\RiceQuakes\\.nuget\\packages\\htmlagilitypack\\1.11.62\\htmlagilitypack.1.11.62.nupkg.sha512",
+    "C:\\Users\\RiceQuakes\\.nuget\\packages\\microsoft.netcore.platforms\\5.0.0\\microsoft.netcore.platforms.5.0.0.nupkg.sha512",
+    "C:\\Users\\RiceQuakes\\.nuget\\packages\\microsoft.win32.systemevents\\5.0.0\\microsoft.win32.systemevents.5.0.0.nupkg.sha512",
+    "C:\\Users\\RiceQuakes\\.nuget\\packages\\system.drawing.common\\5.0.2\\system.drawing.common.5.0.2.nupkg.sha512",
+    "C:\\Users\\RiceQuakes\\.nuget\\packages\\system.io.packaging\\4.5.0\\system.io.packaging.4.5.0.nupkg.sha512",
+    "C:\\Users\\RiceQuakes\\.nuget\\packages\\xceed.document.net\\2.0.21359.11160\\xceed.document.net.2.0.21359.11160.nupkg.sha512",
+    "C:\\Users\\RiceQuakes\\.nuget\\packages\\xceed.pdf\\2.0.21359.11160\\xceed.pdf.2.0.21359.11160.nupkg.sha512",
+    "C:\\Users\\RiceQuakes\\.nuget\\packages\\xceed.words.net\\2.0.21359.11160\\xceed.words.net.2.0.21359.11160.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1603",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "CodeDup.Text 依赖于 Xceed.Words.NET (>= 1.9.0)，但没有找到 Xceed.Words.NET 1.9.0。已改为解析 Xceed.Words.NET 2.0.21359.11160。",
+      "libraryId": "Xceed.Words.NET",
+      "targetGraphs": [
+        "net8.0-windows7.0"
+      ]
+    }
+  ]
+}

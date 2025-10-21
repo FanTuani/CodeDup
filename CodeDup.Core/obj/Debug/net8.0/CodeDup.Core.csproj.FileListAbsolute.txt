@@ -1,0 +1,11 @@
+D:\Github\CodeDup\CodeDup.Core\bin\Debug\net8.0\CodeDup.Core.deps.json
+D:\Github\CodeDup\CodeDup.Core\bin\Debug\net8.0\CodeDup.Core.dll
+D:\Github\CodeDup\CodeDup.Core\bin\Debug\net8.0\CodeDup.Core.pdb
+D:\Github\CodeDup\CodeDup.Core\obj\Debug\net8.0\CodeDup.Core.GeneratedMSBuildEditorConfig.editorconfig
+D:\Github\CodeDup\CodeDup.Core\obj\Debug\net8.0\CodeDup.Core.AssemblyInfoInputs.cache
+D:\Github\CodeDup\CodeDup.Core\obj\Debug\net8.0\CodeDup.Core.AssemblyInfo.cs
+D:\Github\CodeDup\CodeDup.Core\obj\Debug\net8.0\CodeDup.Core.csproj.CoreCompileInputs.cache
+D:\Github\CodeDup\CodeDup.Core\obj\Debug\net8.0\CodeDup.Core.dll
+D:\Github\CodeDup\CodeDup.Core\obj\Debug\net8.0\refint\CodeDup.Core.dll
+D:\Github\CodeDup\CodeDup.Core\obj\Debug\net8.0\CodeDup.Core.pdb
+D:\Github\CodeDup\CodeDup.Core\obj\Debug\net8.0\ref\CodeDup.Core.dll
