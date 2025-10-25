@@ -8,7 +8,8 @@ namespace CodeDup.Text.Extractors
 {
     public class TextExtractorTxt : ITextExtractor
     {
-        public bool CanHandle(string extension) => extension == "txt" || extension == "cs" || extension == "py" || extension == "html";
+        public bool CanHandle(string extension) => extension == "txt" || extension == "cs" || extension == "py" || extension == "html"
+        || extension == "cpp" || extension == "c";
 
         public string ExtractText(string filePath)
         {

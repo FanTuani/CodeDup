@@ -18,11 +18,11 @@
                 <ComboBoxItem Content="ShingleCosine"/>
             </ComboBox>
             <TextBlock Text="阈值(0-1)：" Margin="12,0,4,0"/>
-            <TextBox x:Name="ThresholdBox" Width="80" Text="0.8" />
+            <TextBox x:Name="ThresholdBox" Width="80" Text="0.6" />
             <Button Content="开始查重" Click="RunCompare_Click"/>
             <Separator/>
             <Button Content="导出结果" Click="ExportResults_Click"/>
-            <Button Content="双文件对比" Click="CompareFiles_Click"/>
+            <!-- <Button Content="双文件对比" Click="CompareFiles_Click"/> 已被双击结果代替-->
         </ToolBar>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -53,8 +53,8 @@
                     <ComboBoxItem Content="DOCX"/>
                     <ComboBoxItem Content="PDF"/>
                 </ComboBox>
-                <CheckBox x:Name="SortByDate" Content="按日期排序" Margin="8" Checked="FilterChanged" Unchecked="FilterChanged"/>
-                <CheckBox x:Name="SortByName" Content="按名称排序" Margin="8" Checked="FilterChanged" Unchecked="FilterChanged"/>
+                <RadioButton x:Name="SortByDate" Content="按日期排序" GroupName="SortMode" Margin="8" Checked="FilterChanged" IsChecked="True"/>
+                <RadioButton x:Name="SortByName" Content="按名称排序" GroupName="SortMode" Margin="8" Checked="FilterChanged"/>
             </StackPanel>
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>

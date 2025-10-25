@@ -118,7 +118,7 @@ public partial class MainWindow : Window
         }
         var dlg = new OpenFileDialog
         {
-            Filter = "All Supported|*.txt;*.cs;*.py;*.html;*.pdf;*.docx|Text|*.txt|C#|*.cs|Python|*.py|HTML|*.html|PDF|*.pdf|Word|*.docx",
+            Filter = "All Supported|*.txt;*.cs;*.py;*.html;*.pdf;*.cpp;*.c",
             Multiselect = true
         };
         if (dlg.ShowDialog() == true)
@@ -345,6 +345,12 @@ public partial class MainWindow : Window
         if (((System.Windows.Controls.TabItem)ResultTabs.Items[0]).Content == null)
         {
             var lv = new System.Windows.Controls.ListView();
+            lv.MouseDoubleClick += (s, e) => {
+                if (lv.SelectedItem != null)
+                {
+                    CompareFiles_Click(s, e);
+                }
+            };
             var gv = new System.Windows.Controls.GridView();
             gv.Columns.Add(new System.Windows.Controls.GridViewColumn { Header = "文件A", DisplayMemberBinding = new System.Windows.Data.Binding("FileNameA"), Width = 200 });
             gv.Columns.Add(new System.Windows.Controls.GridViewColumn { Header = "文件B", DisplayMemberBinding = new System.Windows.Data.Binding("FileNameB"), Width = 200 });
