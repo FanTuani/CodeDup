@@ -3,81 +3,84 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:CodeDup.App"
         mc:Ignorable="d"
         Title="CodeDup 代码查重" Height="600" Width="1000"
         AllowDrop="True" Drop="Window_Drop">
     <DockPanel>
         <ToolBar DockPanel.Dock="Top">
-            <Button Content="新建项目" Click="CreateProject_Click"/>
-            <Button Content="导入文件" Click="ImportFiles_Click"/>
-            <Separator/>
+            <Button Content="新建项目" Click="CreateProject_Click" />
+            <Button Content="导入文件" Click="ImportFiles_Click" />
+            <Separator />
             <ComboBox x:Name="AlgoCombo" Width="160">
-                <ComboBoxItem Content="Winnowing"/>
-                <ComboBoxItem Content="SimHash"/>
-                <ComboBoxItem Content="ShingleCosine"/>
+                <ComboBoxItem Content="Winnowing" />
+                <ComboBoxItem Content="SimHash" />
+                <ComboBoxItem Content="ShingleCosine" />
             </ComboBox>
-            <TextBlock Text="阈值(0-1)：" Margin="12,0,4,0"/>
+            <TextBlock Text="阈值(0-1)：" Margin="12,0,4,0" />
             <TextBox x:Name="ThresholdBox" Width="80" Text="0.6" />
-            <Button Content="开始查重" Click="RunCompare_Click"/>
-            <Separator/>
-            <Button Content="导出结果" Click="ExportResults_Click"/>
+            <Button Content="开始查重" Click="RunCompare_Click" />
+            <Separator />
+            <Button Content="导出结果" Click="ExportResults_Click" />
             <!-- <Button Content="双文件对比" Click="CompareFiles_Click"/> 已被双击结果代替-->
         </ToolBar>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="220"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="220" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0">
-                <TextBlock Text="项目" FontWeight="Bold" Margin="8"/>
+                <TextBlock Text="项目" FontWeight="Bold" Margin="8" />
                 <ListBox x:Name="ProjectList" SelectionChanged="ProjectList_SelectionChanged" />
-                <Button Content="删除项目" Margin="8" Click="DeleteProject_Click"/>
-                
-                <Separator Margin="8"/>
-                <TextBlock Text="文件筛选" FontWeight="Bold" Margin="8"/>
+                <Button Content="删除项目" Margin="8" Click="DeleteProject_Click" />
+
+                <Separator Margin="8" />
+                <TextBlock Text="文件筛选" FontWeight="Bold" Margin="8" />
                 <ComboBox x:Name="LanguageFilter" Margin="8,0" SelectionChanged="FilterChanged">
-                    <ComboBoxItem Content="所有语言" IsSelected="True"/>
-                    <ComboBoxItem Content="C#"/>
-                    <ComboBoxItem Content="Python"/>
-                    <ComboBoxItem Content="HTML"/>
-                    <ComboBoxItem Content="Text"/>
-                    <ComboBoxItem Content="JavaScript"/>
-                    <ComboBoxItem Content="Java"/>
-                    <ComboBoxItem Content="C++"/>
-                    <ComboBoxItem Content="C"/>
-                    <ComboBoxItem Content="XML"/>
-                    <ComboBoxItem Content="JSON"/>
-                    <ComboBoxItem Content="CSS"/>
-                    <ComboBoxItem Content="SQL"/>
-                    <ComboBoxItem Content="DOCX"/>
-                    <ComboBoxItem Content="PDF"/>
+                    <ComboBoxItem Content="所有语言" IsSelected="True" />
+                    <ComboBoxItem Content="C#" />
+                    <ComboBoxItem Content="Python" />
+                    <ComboBoxItem Content="HTML" />
+                    <ComboBoxItem Content="Text" />
+                    <ComboBoxItem Content="JavaScript" />
+                    <ComboBoxItem Content="Java" />
+                    <ComboBoxItem Content="C++" />
+                    <ComboBoxItem Content="C" />
+                    <ComboBoxItem Content="XML" />
+                    <ComboBoxItem Content="JSON" />
+                    <ComboBoxItem Content="CSS" />
+                    <ComboBoxItem Content="SQL" />
+                    <ComboBoxItem Content="DOCX" />
+                    <ComboBoxItem Content="PDF" />
                 </ComboBox>
-                <RadioButton x:Name="SortByDate" Content="按日期排序" GroupName="SortMode" Margin="8" Checked="FilterChanged" IsChecked="True"/>
-                <RadioButton x:Name="SortByName" Content="按名称排序" GroupName="SortMode" Margin="8" Checked="FilterChanged"/>
+                <RadioButton x:Name="SortByDate" Content="按日期排序" GroupName="SortMode" Margin="8"
+                             Checked="FilterChanged" IsChecked="True" />
+                <RadioButton x:Name="SortByName" Content="按名称排序" GroupName="SortMode" Margin="8"
+                             Checked="FilterChanged" />
             </StackPanel>
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="2*"/>
-                    <RowDefinition Height="3*"/>
+                    <RowDefinition Height="2*" />
+                    <RowDefinition Height="3*" />
                 </Grid.RowDefinitions>
                 <GroupBox Header="文件">
                     <ListView x:Name="FileList" AllowDrop="True">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="名称" Width="220" DisplayMemberBinding="{Binding FileName}"/>
-                                <GridViewColumn Header="语言" Width="100" DisplayMemberBinding="{Binding ProgrammingLanguage}"/>
-                                <GridViewColumn Header="大小(B)" Width="100" DisplayMemberBinding="{Binding FileSizeBytes}"/>
-                                <GridViewColumn Header="导入时间" Width="160" DisplayMemberBinding="{Binding ImportedAt}"/>
+                                <GridViewColumn Header="名称" Width="220" DisplayMemberBinding="{Binding FileName}" />
+                                <GridViewColumn Header="语言" Width="100"
+                                                DisplayMemberBinding="{Binding ProgrammingLanguage}" />
+                                <GridViewColumn Header="大小(B)" Width="100"
+                                                DisplayMemberBinding="{Binding FileSizeBytes}" />
+                                <GridViewColumn Header="导入时间" Width="160" DisplayMemberBinding="{Binding ImportedAt}" />
                             </GridView>
                         </ListView.View>
                     </ListView>
                 </GroupBox>
                 <GroupBox Grid.Row="1" Header="结果">
                     <TabControl x:Name="ResultTabs">
-                        <TabItem Header="两两分组"/>
-                        <TabItem Header="中心分组"/>
-                        <TabItem Header="分组显示"/>
+                        <TabItem Header="两两分组" />
+                        <TabItem Header="中心分组" />
+                        <TabItem Header="分组显示" />
                     </TabControl>
                 </GroupBox>
             </Grid>
