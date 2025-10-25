@@ -1,6 +1,7 @@
-# Visual Studio files
+# IDE files
 .vs/
 .vscode/
+.idea/
 *.suo
 *.user
 *.userosscache
