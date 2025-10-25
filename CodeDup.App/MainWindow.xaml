@@ -42,6 +42,14 @@
                     <ComboBoxItem Content="Python"/>
                     <ComboBoxItem Content="HTML"/>
                     <ComboBoxItem Content="Text"/>
+                    <ComboBoxItem Content="JavaScript"/>
+                    <ComboBoxItem Content="Java"/>
+                    <ComboBoxItem Content="C++"/>
+                    <ComboBoxItem Content="C"/>
+                    <ComboBoxItem Content="XML"/>
+                    <ComboBoxItem Content="JSON"/>
+                    <ComboBoxItem Content="CSS"/>
+                    <ComboBoxItem Content="SQL"/>
                     <ComboBoxItem Content="DOCX"/>
                     <ComboBoxItem Content="PDF"/>
                 </ComboBox>

@@ -57,7 +57,7 @@ public partial class MainWindow : Window
         
         // 语言筛选
         var selectedLanguage = (LanguageFilter.SelectedItem as System.Windows.Controls.ComboBoxItem)?.Content?.ToString();
-        if (selectedLanguage != "所有语言")
+        if (selectedLanguage != null && selectedLanguage != "所有语言")
         {
             files = files.Where(f => f.ProgrammingLanguage == selectedLanguage).ToList();
         }
@@ -162,11 +162,17 @@ public partial class MainWindow : Window
             if (skipped) continue;
             if (handled != null)
             {
-                var text = handled.ExtractTextAsync(p).GetAwaiter().GetResult();
-                var cleaned = Preprocess.NormalizeWhitespace(Preprocess.StripCommentsAndNoise(text, ext));
-                var dest = _store.GetFileContentPath(project, added.Id);
-                System.IO.File.WriteAllText(dest, cleaned);
-                added.ProgrammingLanguage = LanguageDetect.FromExtension(ext);
+                try
+                {
+                    var text = handled.ExtractText(p);
+                    var cleaned = Preprocess.NormalizeWhitespace(Preprocess.StripCommentsAndNoise(text, ext));
+                    var dest = _store.GetFileContentPath(project, added.Id);
+                    System.IO.File.WriteAllText(dest, cleaned);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"处理文件 {System.IO.Path.GetFileName(p)} 时出错: {ex.Message}", "处理错误", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
             }
         }
         RefreshFiles();

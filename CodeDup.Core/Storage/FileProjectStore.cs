@@ -87,8 +87,10 @@ namespace CodeDup.Core.Storage
             metadata.ImportedAt = DateTime.UtcNow;
             metadata.FileSizeBytes = new FileInfo(originalFilePath).Length;
             metadata.RelativePath = $"files/{metadata.Id}.txt";
+            
+            // 设置编程语言
+            metadata.ProgrammingLanguage = LanguageDetect.FromExtension(ext);
 
-            // Copy normalized text content later by extractors. For now, raw text copy.
             var dest = Path.Combine(GetProjectDir(projectName), metadata.RelativePath);
             Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
             File.Copy(originalFilePath, dest, overwriteIfNameExists);

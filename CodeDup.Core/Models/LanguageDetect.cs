@@ -11,11 +11,19 @@ namespace CodeDup.Core.Models
             {
                 "cs" => "C#",
                 "py" => "Python",
-                "html" => "HTML",
+                "html" or "htm" => "HTML",
                 "txt" => "Text",
+                "js" => "JavaScript",
+                "java" => "Java",
+                "cpp" or "cxx" => "C++",
+                "c" => "C",
+                "xml" => "XML",
+                "json" => "JSON",
+                "css" => "CSS",
+                "sql" => "SQL",
                 "docx" => "DOCX",
                 "pdf" => "PDF",
-                _ => ext
+                _ => ext.ToUpperInvariant()
             };
         }
 

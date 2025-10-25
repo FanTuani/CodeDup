@@ -1,132 +1,92 @@
 [
   {
-    "Id": "0e7f07b32daa4697b3c715f3ecb59c03",
-    "FileName": "test.html",
-    "Extension": "html",
-    "RelativePath": "files/0e7f07b32daa4697b3c715f3ecb59c03.txt",
-    "ProjectName": "Project1",
-    "ProgrammingLanguage": "",
-    "FileSizeBytes": 2383,
-    "ImportedAt": "2025-10-20T07:09:13.3581444Z"
-  },
-  {
-    "Id": "39e0e1f3527e49548d554c5f032f173b",
-    "FileName": "try.cs",
-    "Extension": "cs",
-    "RelativePath": "files/39e0e1f3527e49548d554c5f032f173b.txt",
-    "ProjectName": "Project1",
-    "ProgrammingLanguage": "",
-    "FileSizeBytes": 1361,
-    "ImportedAt": "2025-10-20T07:11:52.3045207Z"
-  },
-  {
-    "Id": "3628e8997fd3408b92b19ef5db5898d3",
-    "FileName": "try2.cs",
-    "Extension": "cs",
-    "RelativePath": "files/3628e8997fd3408b92b19ef5db5898d3.txt",
-    "ProjectName": "Project1",
-    "ProgrammingLanguage": "",
-    "FileSizeBytes": 837,
-    "ImportedAt": "2025-10-20T07:11:56.0525846Z"
-  },
-  {
-    "Id": "a7feb3deddcd4fdeb745ddc8469edf86",
-    "FileName": "Untitled-1.cs",
-    "Extension": "cs",
-    "RelativePath": "files/a7feb3deddcd4fdeb745ddc8469edf86.txt",
-    "ProjectName": "Project1",
-    "ProgrammingLanguage": "",
-    "FileSizeBytes": 1981,
-    "ImportedAt": "2025-10-20T07:11:56.0601698Z"
-  },
-  {
-    "Id": "f9ffa4ca540d431d93cb50a254f6496e",
+    "Id": "3788b3010d23422cbdd4da6d26dc4695",
     "FileName": "Calculator.cs",
     "Extension": "cs",
-    "RelativePath": "files/f9ffa4ca540d431d93cb50a254f6496e.txt",
+    "RelativePath": "files/3788b3010d23422cbdd4da6d26dc4695.txt",
     "ProjectName": "Project1",
-    "ProgrammingLanguage": "",
+    "ProgrammingLanguage": "C#",
     "FileSizeBytes": 1051,
-    "ImportedAt": "2025-10-20T07:17:13.7756412Z"
+    "ImportedAt": "2025-10-25T02:23:00.766847Z"
   },
   {
-    "Id": "4f2f5d71387c4bc5b9f3fa418aaaf6f6",
+    "Id": "ff0b57ba22b448c4be4a4bf1a9ce8ad4",
     "FileName": "CompletelyDifferent.cs",
     "Extension": "cs",
-    "RelativePath": "files/4f2f5d71387c4bc5b9f3fa418aaaf6f6.txt",
+    "RelativePath": "files/ff0b57ba22b448c4be4a4bf1a9ce8ad4.txt",
     "ProjectName": "Project1",
-    "ProgrammingLanguage": "",
+    "ProgrammingLanguage": "C#",
     "FileSizeBytes": 785,
-    "ImportedAt": "2025-10-20T07:17:13.7935334Z"
+    "ImportedAt": "2025-10-25T02:23:00.7802324Z"
   },
   {
-    "Id": "b84dde48c8d3472f941a6d7e3ab44343",
+    "Id": "812bb635049f48fdb5e47c46694cf5c9",
     "FileName": "FileProcessor.cs",
     "Extension": "cs",
-    "RelativePath": "files/b84dde48c8d3472f941a6d7e3ab44343.txt",
+    "RelativePath": "files/812bb635049f48fdb5e47c46694cf5c9.txt",
     "ProjectName": "Project1",
-    "ProgrammingLanguage": "",
+    "ProgrammingLanguage": "C#",
     "FileSizeBytes": 1533,
-    "ImportedAt": "2025-10-20T07:17:13.8016901Z"
+    "ImportedAt": "2025-10-25T02:23:00.7872877Z"
   },
   {
-    "Id": "d983a1e9cee142c8b4ced02172cf7c76",
+    "Id": "4278e6f1eb7f428db0e8df6945be484a",
     "FileName": "MathHelper.cs",
     "Extension": "cs",
-    "RelativePath": "files/d983a1e9cee142c8b4ced02172cf7c76.txt",
+    "RelativePath": "files/4278e6f1eb7f428db0e8df6945be484a.txt",
     "ProjectName": "Project1",
-    "ProgrammingLanguage": "",
+    "ProgrammingLanguage": "C#",
     "FileSizeBytes": 1019,
-    "ImportedAt": "2025-10-20T07:17:13.8084572Z"
+    "ImportedAt": "2025-10-25T02:23:00.7938132Z"
   },
   {
-    "Id": "6848fd51b5ee46b0bb20075ccdc13c8b",
+    "Id": "a2277eb8160c4c9ea76ef251c9aca9c3",
     "FileName": "ProductCatalog.cs",
     "Extension": "cs",
-    "RelativePath": "files/6848fd51b5ee46b0bb20075ccdc13c8b.txt",
+    "RelativePath": "files/a2277eb8160c4c9ea76ef251c9aca9c3.txt",
     "ProjectName": "Project1",
-    "ProgrammingLanguage": "",
+    "ProgrammingLanguage": "C#",
     "FileSizeBytes": 1585,
-    "ImportedAt": "2025-10-20T07:17:13.8153818Z"
+    "ImportedAt": "2025-10-25T02:23:00.8003205Z"
   },
   {
-    "Id": "b6869fd05c4d4b019c45dd877fcde39b",
+    "Id": "1b7754ddc83148acad6dc3a598122352",
     "FileName": "StudentManager.cs",
     "Extension": "cs",
-    "RelativePath": "files/b6869fd05c4d4b019c45dd877fcde39b.txt",
+    "RelativePath": "files/1b7754ddc83148acad6dc3a598122352.txt",
     "ProjectName": "Project1",
-    "ProgrammingLanguage": "",
+    "ProgrammingLanguage": "C#",
     "FileSizeBytes": 1552,
-    "ImportedAt": "2025-10-20T07:17:13.8219397Z"
+    "ImportedAt": "2025-10-25T02:23:00.8070813Z"
   },
   {
-    "Id": "ebccf769ab7f45ffb185fffca5ec76d9",
+    "Id": "5400e0379ed14153bedae557c028b7e8",
     "FileName": "TeacherManager.cs",
     "Extension": "cs",
-    "RelativePath": "files/ebccf769ab7f45ffb185fffca5ec76d9.txt",
+    "RelativePath": "files/5400e0379ed14153bedae557c028b7e8.txt",
     "ProjectName": "Project1",
-    "ProgrammingLanguage": "",
+    "ProgrammingLanguage": "C#",
     "FileSizeBytes": 1645,
-    "ImportedAt": "2025-10-20T07:17:13.8288452Z"
+    "ImportedAt": "2025-10-25T02:23:00.8134857Z"
   },
   {
-    "Id": "4d8c6d666d724235989493472f43ec84",
+    "Id": "e971793cc3cb4e9a84e1e0521ec937a2",
     "FileName": "TextProcessor.cs",
     "Extension": "cs",
-    "RelativePath": "files/4d8c6d666d724235989493472f43ec84.txt",
+    "RelativePath": "files/e971793cc3cb4e9a84e1e0521ec937a2.txt",
     "ProjectName": "Project1",
-    "ProgrammingLanguage": "",
+    "ProgrammingLanguage": "C#",
     "FileSizeBytes": 1549,
-    "ImportedAt": "2025-10-20T07:17:13.8356408Z"
+    "ImportedAt": "2025-10-25T02:23:00.8198029Z"
   },
   {
-    "Id": "66999aee16d543cbaa3745589854a6c0",
+    "Id": "4db1e532e2ca4bc5a0e13f33ae716d94",
     "FileName": "UserService.cs",
     "Extension": "cs",
-    "RelativePath": "files/66999aee16d543cbaa3745589854a6c0.txt",
+    "RelativePath": "files/4db1e532e2ca4bc5a0e13f33ae716d94.txt",
     "ProjectName": "Project1",
-    "ProgrammingLanguage": "",
+    "ProgrammingLanguage": "C#",
     "FileSizeBytes": 1460,
-    "ImportedAt": "2025-10-20T07:17:13.8424142Z"
+    "ImportedAt": "2025-10-25T02:23:00.8259294Z"
   }
 ]

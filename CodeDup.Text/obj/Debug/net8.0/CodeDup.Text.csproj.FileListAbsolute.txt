@@ -6,6 +6,7 @@ D:\Github\CodeDup\CodeDup.Text\obj\Debug\net8.0\CodeDup.Text.GeneratedMSBuildEdi
 D:\Github\CodeDup\CodeDup.Text\obj\Debug\net8.0\CodeDup.Text.AssemblyInfoInputs.cache
 D:\Github\CodeDup\CodeDup.Text\obj\Debug\net8.0\CodeDup.Text.AssemblyInfo.cs
 D:\Github\CodeDup\CodeDup.Text\obj\Debug\net8.0\CodeDup.Text.csproj.CoreCompileInputs.cache
+D:\Github\CodeDup\CodeDup.Text\obj\Debug\net8.0\CodeDup.Text.sourcelink.json
 D:\Github\CodeDup\CodeDup.Text\obj\Debug\net8.0\CodeDup.Text.dll
 D:\Github\CodeDup\CodeDup.Text\obj\Debug\net8.0\refint\CodeDup.Text.dll
 D:\Github\CodeDup\CodeDup.Text\obj\Debug\net8.0\CodeDup.Text.pdb
