@@ -1,10 +1,11 @@
+中文测试
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace UserManagement
 {
-    public class UserService
+    public class UserService 中文测试
     {
         private List<User> users;
         
