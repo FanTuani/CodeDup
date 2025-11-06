@@ -148,6 +148,11 @@ public partial class MainWindow : Window {
         var pairs = new List<PairSimilarity>();
         for (var i = 0; i < files.Count; i++)
         for (var j = i + 1; j < files.Count; j++) {
+            // 只对相同语言的文件进行查重
+            if (files[i].ProgrammingLanguage != files[j].ProgrammingLanguage) {
+                continue;
+            }
+            
             var aPath = _store.GetFileContentPath(project, files[i].Id);
             var bPath = _store.GetFileContentPath(project, files[j].Id);
             
