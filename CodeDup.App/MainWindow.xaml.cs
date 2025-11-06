@@ -216,33 +216,69 @@ public partial class MainWindow : Window {
         var centerGroups = new List<CenterGroupResult>();
         var processedFiles = new HashSet<string>();
 
+        // 构建邻接表：每个文件到其相似文件的映射
+        var adjacencyList = new Dictionary<string, List<(string fileId, double similarity)>>();
         foreach (var file in files) {
-            if (processedFiles.Contains(file.Id)) continue;
+            adjacencyList[file.Id] = new List<(string, double)>();
+        }
+        
+        foreach (var pair in pairs) {
+            adjacencyList[pair.FileIdA].Add((pair.FileIdB, pair.Similarity));
+            adjacencyList[pair.FileIdB].Add((pair.FileIdA, pair.Similarity));
+        }
 
-            var relatedPairs = pairs.Where(p => p.FileIdA == file.Id || p.FileIdB == file.Id).ToList();
-            if (relatedPairs.Count == 0) continue;
+        // 计算每个文件的度数（连接数）
+        var fileDegrees = adjacencyList.ToDictionary(
+            kvp => kvp.Key, 
+            kvp => kvp.Value.Count
+        );
 
-            var relatedFiles = new HashSet<string> { file.Id };
+        // 按度数降序处理文件（度数高的优先作为中心）
+        var filesByDegree = fileDegrees
+            .Where(kvp => kvp.Value > 0) // 只处理有连接的文件
+            .OrderByDescending(kvp => kvp.Value)
+            .ThenByDescending(kvp => adjacencyList[kvp.Key].Average(x => x.similarity)) // 相同度数时，平均相似度高的优先
+            .Select(kvp => kvp.Key)
+            .ToList();
+
+        foreach (var centerId in filesByDegree) {
+            if (processedFiles.Contains(centerId)) continue;
+
+            // 获取与中心直接相连的所有文件
+            var directNeighbors = adjacencyList[centerId]
+                .Where(neighbor => !processedFiles.Contains(neighbor.fileId))
+                .ToList();
+
+            if (directNeighbors.Count == 0) continue;
+
+            // 形成以当前文件为中心的组
+            var groupMembers = new HashSet<string> { centerId };
             var maxSim = 0.0;
 
-            foreach (var pair in relatedPairs) {
-                var otherFileId = pair.FileIdA == file.Id ? pair.FileIdB : pair.FileIdA;
-                relatedFiles.Add(otherFileId);
-                maxSim = Math.Max(maxSim, pair.Similarity);
+            foreach (var (neighborId, similarity) in directNeighbors) {
+                groupMembers.Add(neighborId);
+                maxSim = Math.Max(maxSim, similarity);
             }
 
+            // 创建中心分组结果
             centerGroups.Add(new CenterGroupResult {
-                CenterFileName = file.FileName,
-                CenterFileId = file.Id,
-                RelatedFileNames = relatedFiles.Where(f => f != file.Id).Select(f => fileDict.GetValueOrDefault(f, f))
+                CenterFileName = fileDict[centerId],
+                CenterFileId = centerId,
+                RelatedFileNames = groupMembers
+                    .Where(id => id != centerId)
+                    .Select(id => fileDict.GetValueOrDefault(id, id))
                     .ToList(),
-                RelatedFileIds = relatedFiles.Where(f => f != file.Id).ToList(),
+                RelatedFileIds = groupMembers
+                    .Where(id => id != centerId)
+                    .ToList(),
                 MaxSimilarity = maxSim,
-                Algorithm = relatedPairs.FirstOrDefault()?.Algorithm ?? ""
+                Algorithm = pairs.FirstOrDefault()?.Algorithm ?? ""
             });
 
-            foreach (var f in relatedFiles)
-                processedFiles.Add(f);
+            // 标记所有组成员为已处理
+            foreach (var memberId in groupMembers) {
+                processedFiles.Add(memberId);
+            }
         }
 
         return centerGroups.OrderByDescending(g => g.MaxSimilarity).ToList();
