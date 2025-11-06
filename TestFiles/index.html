@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>主页面</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+</head>
+
+<body>
+    <header>
+        <h1>我的主页</h1>
+    </header>
+    <main>
+        <section>
+            <h2>表格示例</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>姓名</th>
+                        <th>邮箱</th>
+                        <th>兴趣</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>张三</td>
+                        <td>zhangsan@example.com</td>
+                        <td>编程</td>
+                    </tr>
+                    <tr>
+                        <td>李四</td>
+                        <td>lisi@example.com</td>
+                        <td>篮球</td>
+                    </tr>
+                    <tr>
+                        <td>王五</td>
+                        <td>wangwu@example.com</td>
+                        <td>旅行</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        <section>
+            <h2>表单示例</h2>
+            <form id="myForm"> 姓名：<input type="text" id="name" required><br> 邮箱：<input type="email" id="email"
+                    required><br> 兴趣： <select id="hobby">
+                    <option value="coding">编程</option>
+                    <option value="music">音乐</option>
+                    <option value="travel">旅行</option>
+                </select><br> <button type="submit">提交</button> </form>
+            <p id="errorMsg"></p>
+        </section>
+        <section>
+            <h2>实用功能</h2>
+            <p id="datetime"></p> <button onclick="changeStyle()">点击改变样式</button>
+        </section>
+    </main>
+    <footer>
+        <p>版权所有 &copy; 2025</p>
+    </footer>
+</body>
+
+</html>

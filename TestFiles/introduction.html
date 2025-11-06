@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>个人介绍</title> <!-- 1. 外部样式表 -->
+        <link rel="stylesheet" href="styles.css"> <!-- 2. 内部样式表 -->
+        <style>
+            h1 {
+                color: blue;
+                /* 一级标题为蓝色 */
+                text-align: center;
+            }
+
+            h2 {
+                color: green;
+                /* 二级标题为绿色 */
+            }
+
+            ul {
+                list-style-type: square;
+                /* 自定义列表样式 */
+            }
+
+            a:hover {
+                color: red;
+                /* 链接悬停效果 */
+            }
+
+            /* 简单CSS动画 */
+            .fade-in {
+                animation: fadeIn 2s ease-in;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                }
+
+                to {
+                    opacity: 1;
+                }
+            }
+        </style>
+    </head>
+
+    <body style="font-family: Arial; background-color: #f9f9f9;"> <!-- 3. 内联样式 -->
+        <h1 style="font-size: 32px;">我的个人介绍</h1>
+        <h2 class="fade-in">关于我</h2>
+        <p>大家好，我是某某，喜欢编程和设计。</p>
+        <ul>
+            <li>兴趣：算法竞赛</li>
+            <li>爱好：旅行</li>
+        </ul>
+        <a href="index.html">返回首页</a>
+    </body>
+
+</html>
