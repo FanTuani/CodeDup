@@ -394,6 +394,23 @@ public partial class MainWindow : Window {
         compareWindow.ShowDialog();
     }
 
+    private void FileList_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e) {
+        if (ProjectList.SelectedItem is not string project) {
+            MessageBox.Show("请先选择项目");
+            return;
+        }
+
+        // 获取选中的文件
+        if (FileList.SelectedItem is not CodeFileMetadata selectedFile) {
+            return; // 没有选中文件，忽略
+        }
+
+        // 打开文件查看窗口
+        var viewWindow = new FileViewWindow(project, selectedFile, _store);
+        viewWindow.Owner = this;
+        viewWindow.ShowDialog();
+    }
+
     private string ProcessFileForComparison(string filePath, string extension) {
         if (!File.Exists(filePath)) return string.Empty;
         

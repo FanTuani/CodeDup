@@ -19,10 +19,11 @@
             <TextBlock x:Name="SimilarityLabel" Text="" />
             
             <!-- 视图切换按钮 -->
-            <Button x:Name="ToggleViewButton" Content="切换为并排视图" 
+            <Button x:Name="ToggleViewButton" 
+                    Content="切换为并排视图" 
                     Click="ToggleView_Click" 
                     Margin="20,0,0,0" 
-                    Padding="10,5" 
+                    Padding="5,5" 
                     Background="#2196F3" 
                     Foreground="White" 
                     BorderThickness="0" 

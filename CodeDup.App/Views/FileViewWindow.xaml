@@ -1,0 +1,47 @@
+<Window x:Class="CodeDup.App.Views.FileViewWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
+        Title="文件内容查看" Height="600" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- 文件信息栏 -->
+        <Border Grid.Row="0" Margin="10" Background="#F5F5F5" Padding="10">
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                    <TextBlock Text="文件名: " FontWeight="Bold" />
+                    <TextBlock x:Name="FileNameLabel" Text="" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                    <TextBlock Text="语言: " FontWeight="Bold" />
+                    <TextBlock x:Name="LanguageLabel" Text="" Margin="0,0,20,0" />
+                    <TextBlock Text="大小: " FontWeight="Bold" />
+                    <TextBlock x:Name="SizeLabel" Text="" Margin="0,0,20,0" />
+                    <TextBlock Text="导入时间: " FontWeight="Bold" />
+                    <TextBlock x:Name="ImportedAtLabel" Text="" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- 文件内容显示区 -->
+        <Border Grid.Row="1" Margin="5" BorderBrush="#CCCCCC" BorderThickness="1">
+            <avalonedit:TextEditor x:Name="FileContentBox"
+                                   IsReadOnly="True"
+                                   FontFamily="Consolas"
+                                   FontSize="12"
+                                   ShowLineNumbers="True"
+                                   VerticalScrollBarVisibility="Auto"
+                                   HorizontalScrollBarVisibility="Auto" />
+        </Border>
+
+        <!-- 底部按钮栏 -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
+            <Button Content="关闭" Click="Close_Click" Width="80" Margin="5" />
+        </StackPanel>
+    </Grid>
+</Window>
