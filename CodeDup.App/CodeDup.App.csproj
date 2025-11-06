@@ -1,9 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
-        <ProjectReference Include="..\CodeDup.Core\CodeDup.Core.csproj"/>
-        <ProjectReference Include="..\CodeDup.Algorithms\CodeDup.Algorithms.csproj"/>
-        <ProjectReference Include="..\CodeDup.Text\CodeDup.Text.csproj"/>
+        <ProjectReference Include="..\CodeDup.Core\CodeDup.Core.csproj" />
+        <ProjectReference Include="..\CodeDup.Algorithms\CodeDup.Algorithms.csproj" />
+        <ProjectReference Include="..\CodeDup.Text\CodeDup.Text.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="DiffPlex.Wpf" Version="1.9.1" />
     </ItemGroup>
 
     <PropertyGroup>

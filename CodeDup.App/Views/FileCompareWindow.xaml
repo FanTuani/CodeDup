@@ -1,6 +1,7 @@
 <Window x:Class="CodeDup.App.Views.FileCompareWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:diffplex="clr-namespace:DiffPlex.Wpf.Controls;assembly=DiffPlex.Wpf"
         Title="双文件对比" Height="600" Width="1000">
     <Grid>
         <Grid.RowDefinitions>
@@ -16,32 +17,33 @@
             <TextBlock x:Name="FileBLabel" Text="" />
             <TextBlock Text=" | 相似度: " FontWeight="Bold" Margin="20,0,0,0" />
             <TextBlock x:Name="SimilarityLabel" Text="" />
+            
+            <!-- 视图切换按钮 -->
+            <Button x:Name="ToggleViewButton" Content="切换为并排视图" 
+                    Click="ToggleView_Click" 
+                    Margin="20,0,0,0" 
+                    Padding="10,5" 
+                    Background="#2196F3" 
+                    Foreground="White" 
+                    BorderThickness="0" 
+                    Cursor="Hand"/>
         </StackPanel>
 
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+        <!-- DiffPlex 内联对比控件（单列模式）-->
+        <diffplex:InlineDiffViewer Grid.Row="1" 
+                                    x:Name="InlineDiffViewer"
+                                    Margin="5"
+                                    FontFamily="Consolas" 
+                                    FontSize="12"
+                                    Visibility="Visible"/>
 
-            <GroupBox Header="文件A内容" Grid.Column="0" Margin="5">
-                <ScrollViewer>
-                    <TextBox x:Name="FileAText" IsReadOnly="True"
-                             TextWrapping="Wrap" AcceptsReturn="True"
-                             FontFamily="Consolas" FontSize="12"
-                             Background="White" />
-                </ScrollViewer>
-            </GroupBox>
-
-            <GroupBox Header="文件B内容" Grid.Column="1" Margin="5">
-                <ScrollViewer>
-                    <TextBox x:Name="FileBText" IsReadOnly="True"
-                             TextWrapping="Wrap" AcceptsReturn="True"
-                             FontFamily="Consolas" FontSize="12"
-                             Background="White" />
-                </ScrollViewer>
-            </GroupBox>
-        </Grid>
+        <!-- DiffPlex 并排对比控件（双列模式）-->
+        <diffplex:SideBySideDiffViewer Grid.Row="1" 
+                                        x:Name="SideBySideDiffViewer"
+                                        Margin="5"
+                                        FontFamily="Consolas" 
+                                        FontSize="12"
+                                        Visibility="Collapsed"/>
 
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
             <Button Content="关闭" Click="Close_Click" Width="80" Margin="5" />
