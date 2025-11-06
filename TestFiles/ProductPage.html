@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>产品展示页面</title>
+    <style>
+        .product-card {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 5px;
+        }
+        .product-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .price {
+            color: #e74c3c;
+            font-size: 20px;
+        }
+        /* 这是CSS注释 */
+        .btn-buy {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>在线商店</h1>
+        <nav>
+            <a href="#home">首页</a>
+            <a href="#products">产品</a>
+            <a href="#contact">联系我们</a>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="product-card">
+            <h2 class="product-title">智能手机 X1</h2>
+            <p>高性能处理器，6.5英寸显示屏，128GB存储空间</p>
+            <p class="price">¥2,999</p>
+            <button class="btn-buy">立即购买</button>
+        </div>
+        
+        <div class="product-card">
+            <h2 class="product-title">笔记本电脑 Pro</h2>
+            <p>轻薄便携，16GB内存，512GB固态硬盘</p>
+            <p class="price">¥5,999</p>
+            <button class="btn-buy">立即购买</button>
+        </div>
+    </main>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.btn-buy').click(function() {
+                const productName = $(this).closest('.product-card').find('.product-title').text();
+                alert('您选择了：' + productName);
+                // 添加到购物车的逻辑
+                addToCart(productName);
+            });
+        });
+        
+        function addToCart(product) {
+            console.log('添加到购物车：' + product);
+            // 这里应该有更多的购物车逻辑
+        }
+    </script>
+</body>
+</html>

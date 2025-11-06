@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简单网页示例</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>欢迎来到我的网站</h1>
+        <p>这是一个简单的网页示例，用于测试文本提取功能。</p>
+        <ul>
+            <li>第一个列表项</li>
+            <li>第二个列表项</li>
+            <li>第三个列表项</li>
+        </ul>
+        <!-- 这是一个HTML注释，应该被忽略 -->
+        <p>更多内容在这里。</p>
+    </div>
+    
+    <script>
+        // 这是JavaScript代码，应该被移除
+        console.log("Hello World");
+        function greet() {
+            alert("欢迎访问！");
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("页面加载完成");
+        });
+    </script>
+</body>
+</html>

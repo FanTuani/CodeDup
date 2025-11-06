@@ -127,17 +127,9 @@ public partial class MainWindow : Window {
             bool skipped;
             var added = _store.AddFile(project, p, overwrite, out skipped);
             if (skipped) continue;
-            if (handled != null)
-                try {
-                    var text = handled.ExtractText(p);
-                    var cleaned = Preprocess.NormalizeWhitespace(Preprocess.StripCommentsAndNoise(text, ext));
-                    var dest = _store.GetFileContentPath(project, added.Id);
-                    File.WriteAllText(dest, cleaned);
-                }
-                catch (Exception ex) {
-                    MessageBox.Show($"处理文件 {Path.GetFileName(p)} 时出错: {ex.Message}", "处理错误", MessageBoxButton.OK,
-                        MessageBoxImage.Warning);
-                }
+            // 注意：现在 AddFile 已经复制了原始文件到 files/{fileId}.txt
+            // 我们不再覆盖它，而是保持原始文件
+            // 处理将在需要时动态进行
         }
 
         RefreshFiles();
@@ -158,8 +150,10 @@ public partial class MainWindow : Window {
         for (var j = i + 1; j < files.Count; j++) {
             var aPath = _store.GetFileContentPath(project, files[i].Id);
             var bPath = _store.GetFileContentPath(project, files[j].Id);
-            var aText = File.Exists(aPath) ? File.ReadAllText(aPath) : string.Empty;
-            var bText = File.Exists(bPath) ? File.ReadAllText(bPath) : string.Empty;
+            
+            // 动态处理文本：读取原始文件并进行处理
+            var aText = ProcessFileForComparison(aPath, files[i].Extension);
+            var bText = ProcessFileForComparison(bPath, files[j].Extension);
             var sim = 0.0;
             switch (algo) {
                 case "Winnowing":
@@ -393,5 +387,20 @@ public partial class MainWindow : Window {
         var compareWindow = new FileCompareWindow(project, selectedPair, _store);
         compareWindow.Owner = this;
         compareWindow.ShowDialog();
+    }
+
+    private string ProcessFileForComparison(string filePath, string extension) {
+        if (!File.Exists(filePath)) return string.Empty;
+        
+        try {
+            var handler = _extractors.FirstOrDefault(x => x.CanHandle(extension));
+            if (handler == null) return File.ReadAllText(filePath, Encoding.UTF8);
+            
+            var text = handler.ExtractText(filePath);
+            return Preprocess.NormalizeWhitespace(Preprocess.StripCommentsAndNoise(text, extension));
+        }
+        catch {
+            return string.Empty;
+        }
     }
 }

@@ -26,7 +26,7 @@ public partial class FileCompareWindow : Window {
             FileBLabel.Text = _pair.FileNameB;
             SimilarityLabel.Text = $"{_pair.Similarity:P2}";
 
-            // 加载文件内容
+            // 加载原始文件内容（不再使用处理后的文本）
             var fileAPath = _store.GetFileContentPath(_project, _pair.FileIdA);
             var fileBPath = _store.GetFileContentPath(_project, _pair.FileIdB);
 
