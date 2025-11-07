@@ -11,9 +11,10 @@ public partial class FileCompareWindow : Window {
     private readonly PairDisplayResult _pair;
     private readonly string _project;
     private readonly IProjectStore _store;
-    private bool _isSideBySideMode = false;
     private string _contentA = string.Empty;
     private string _contentB = string.Empty;
+    private string _extensionA = string.Empty;
+    private string _extensionB = string.Empty;
 
     public FileCompareWindow(string project, PairDisplayResult pair, IProjectStore store) {
         InitializeComponent();
@@ -42,10 +43,13 @@ public partial class FileCompareWindow : Window {
             var extensionA = Path.GetExtension(_pair.FileNameA).TrimStart('.');
             var extensionB = Path.GetExtension(_pair.FileNameB).TrimStart('.');
             
+            _extensionA = extensionA;
+            _extensionB = extensionB;
+            
             _contentA = Preprocess.StripCommentsAndNoise(rawContentA, extensionA);
             _contentB = Preprocess.StripCommentsAndNoise(rawContentB, extensionB);
 
-            // 初始显示内联模式
+            // 显示并排视图，高亮重复部分
             UpdateDiffView();
         }
         catch (Exception ex) {
@@ -54,35 +58,10 @@ public partial class FileCompareWindow : Window {
     }
 
     private void UpdateDiffView() {
-        if (_isSideBySideMode) {
-            // 并排模式
-            var sideBySideBuilder = new SideBySideDiffBuilder(new DiffPlex.Differ());
-            var sideBySideModel = sideBySideBuilder.BuildDiffModel(_contentA, _contentB);
-            SideBySideDiffViewer.DiffModel = sideBySideModel;
-        } else {
-            // 内联模式
-            var inlineBuilder = new InlineDiffBuilder(new DiffPlex.Differ());
-            var inlineModel = inlineBuilder.BuildDiffModel(_contentA, _contentB);
-            InlineDiffViewer.DiffModel = inlineModel;
-        }
-    }
-
-    private void ToggleView_Click(object sender, RoutedEventArgs e) {
-        _isSideBySideMode = !_isSideBySideMode;
-        
-        if (_isSideBySideMode) {
-            // 切换到并排视图
-            InlineDiffViewer.Visibility = Visibility.Collapsed;
-            SideBySideDiffViewer.Visibility = Visibility.Visible;
-            ToggleViewButton.Content = "切换为内联视图";
-        } else {
-            // 切换到内联视图
-            SideBySideDiffViewer.Visibility = Visibility.Collapsed;
-            InlineDiffViewer.Visibility = Visibility.Visible;
-            ToggleViewButton.Content = "切换为并排视图";
-        }
-        
-        UpdateDiffView();
+        // 使用并排模式
+        var sideBySideBuilder = new SideBySideDiffBuilder(new DiffPlex.Differ());
+        var sideBySideModel = sideBySideBuilder.BuildDiffModel(_contentA, _contentB);
+        CustomDiffViewer.SetDiffModel(sideBySideModel, _extensionA, _extensionB);
     }
 
     private void Close_Click(object sender, RoutedEventArgs e) {

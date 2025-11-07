@@ -1,7 +1,7 @@
 <Window x:Class="CodeDup.App.Views.FileCompareWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:diffplex="clr-namespace:DiffPlex.Wpf.Controls;assembly=DiffPlex.Wpf"
+        xmlns:controls="clr-namespace:CodeDup.App.Controls"
         Title="双文件对比" Height="600" Width="1000">
     <Grid>
         <Grid.RowDefinitions>
@@ -17,34 +17,12 @@
             <TextBlock x:Name="FileBLabel" Text="" />
             <TextBlock Text=" | 相似度: " FontWeight="Bold" Margin="20,0,0,0" />
             <TextBlock x:Name="SimilarityLabel" Text="" />
-            
-            <!-- 视图切换按钮 -->
-            <Button x:Name="ToggleViewButton" 
-                    Content="切换为并排视图" 
-                    Click="ToggleView_Click" 
-                    Margin="20,0,0,0" 
-                    Padding="5,5" 
-                    Background="#2196F3" 
-                    Foreground="White" 
-                    BorderThickness="0" 
-                    Cursor="Hand"/>
         </StackPanel>
 
-        <!-- DiffPlex 内联对比控件（单列模式）-->
-        <diffplex:InlineDiffViewer Grid.Row="1" 
-                                    x:Name="InlineDiffViewer"
-                                    Margin="5"
-                                    FontFamily="Consolas" 
-                                    FontSize="12"
-                                    Visibility="Visible"/>
-
-        <!-- DiffPlex 并排对比控件（双列模式）-->
-        <diffplex:SideBySideDiffViewer Grid.Row="1" 
-                                        x:Name="SideBySideDiffViewer"
-                                        Margin="5"
-                                        FontFamily="Consolas" 
-                                        FontSize="12"
-                                        Visibility="Collapsed"/>
+        <!-- 自定义并排对比控件 - 只高亮重复文字部分 -->
+        <controls:CustomSideBySideDiffViewer Grid.Row="1" 
+                                             x:Name="CustomDiffViewer"
+                                             Margin="5"/>
 
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
             <Button Content="关闭" Click="Close_Click" Width="80" Margin="5" />

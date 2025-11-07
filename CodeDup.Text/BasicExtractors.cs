@@ -1,43 +1,7 @@
 using System.Text;
-using HtmlAgilityPack;
 using Xceed.Words.NET;
 
 namespace CodeDup.Text.Extractors;
-
-public class TextExtractorTxt : ITextExtractor {
-    public bool CanHandle(string extension) {
-        return extension == "txt" || extension == "cs" || extension == "py" || extension == "html"
-               || extension == "cpp" || extension == "c";
-    }
-
-    public string ExtractText(string filePath) {
-        var ext = Path.GetExtension(filePath).TrimStart('.').ToLowerInvariant();
-        if (ext == "html") {
-            var html = File.ReadAllText(filePath, Encoding.UTF8);
-            var doc = new HtmlDocument();
-            doc.LoadHtml(html);
-            
-            // 移除 script 和 style 标签及其内容
-            var scriptNodes = doc.DocumentNode.SelectNodes("//script");
-            if (scriptNodes != null) {
-                foreach (var node in scriptNodes) {
-                    node.Remove();
-                }
-            }
-            
-            var styleNodes = doc.DocumentNode.SelectNodes("//style");
-            if (styleNodes != null) {
-                foreach (var node in styleNodes) {
-                    node.Remove();
-                }
-            }
-            
-            return HtmlEntity.DeEntitize(doc.DocumentNode.InnerText);
-        }
-
-        return File.ReadAllText(filePath, Encoding.UTF8);
-    }
-}
 
 public class TextExtractorDocx : ITextExtractor {
     public bool CanHandle(string extension) {

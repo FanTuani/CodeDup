@@ -18,13 +18,13 @@ namespace CodeDup.App;
 
 public partial class MainWindow : Window {
     private readonly List<ITextExtractor> _extractors = new() {
-        new TextExtractorTxt(),
         new TextExtractorDocx(),
         new TextExtractorPdf()
     };
 
     private readonly IProjectStore _store;
 
+    // 初始化主窗口，加载项目列表并设置默认算法
     public MainWindow() {
         InitializeComponent();
         _store = AppBootstrap.CreateStore();
@@ -32,14 +32,17 @@ public partial class MainWindow : Window {
         AlgoCombo.SelectedIndex = 0;
     }
 
+    // 刷新项目列表，从存储中加载所有项目
     private void RefreshProjects() {
         ProjectList.ItemsSource = _store.ListProjects().ToList();
     }
 
+    // 项目选择改变时触发，刷新文件列表
     private void ProjectList_SelectionChanged(object sender, SelectionChangedEventArgs e) {
         RefreshFiles();
     }
 
+    // 刷新当前项目的文件列表
     private void RefreshFiles() {
         if (ProjectList.SelectedItem is string project)
             ApplyFilters(project);
@@ -47,6 +50,7 @@ public partial class MainWindow : Window {
             FileList.ItemsSource = null;
     }
 
+    // 应用过滤条件（语言筛选、排序）并显示文件列表
     private void ApplyFilters(string project) {
         var files = _store.ListFiles(project).ToList();
 
@@ -66,10 +70,12 @@ public partial class MainWindow : Window {
         FileList.ItemsSource = files;
     }
 
+    // 过滤条件改变时触发，重新应用过滤
     private void FilterChanged(object sender, RoutedEventArgs e) {
         if (ProjectList.SelectedItem is string project) ApplyFilters(project);
     }
 
+    // 创建新项目，弹出输入框让用户输入项目名称
     private void CreateProject_Click(object sender, RoutedEventArgs e) {
         var name = Interaction.InputBox("输入新项目名称", "新建项目", "Project1");
         if (string.IsNullOrWhiteSpace(name)) return;
@@ -77,6 +83,7 @@ public partial class MainWindow : Window {
         RefreshProjects();
     }
 
+    // 删除选中的项目，需要用户确认
     private void DeleteProject_Click(object sender, RoutedEventArgs e) {
         if (ProjectList.SelectedItem is not string project) return;
         if (MessageBox.Show($"确认删除项目 {project}?", "确认", MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
@@ -86,6 +93,7 @@ public partial class MainWindow : Window {
         }
     }
 
+    // 导入文件按钮点击事件，打开文件选择对话框
     private void ImportFiles_Click(object sender, RoutedEventArgs e) {
         if (ProjectList.SelectedItem is not string project) {
             MessageBox.Show("请先选择项目");
@@ -99,6 +107,7 @@ public partial class MainWindow : Window {
         if (dlg.ShowDialog() == true) ImportPaths(project, dlg.FileNames);
     }
 
+    // 处理拖放文件到窗口的事件
     private void Window_Drop(object sender, DragEventArgs e) {
         if (ProjectList.SelectedItem is not string project) {
             MessageBox.Show("请先选择项目");
@@ -111,6 +120,7 @@ public partial class MainWindow : Window {
         }
     }
 
+    // 导入多个文件到当前项目，处理同名文件冲突
     private void ImportPaths(string project, IEnumerable<string> paths) {
         foreach (var p in paths) {
             var ext = Path.GetExtension(p).TrimStart('.').ToLowerInvariant();
@@ -123,7 +133,6 @@ public partial class MainWindow : Window {
                 overwrite = r == MessageBoxResult.Yes;
             }
 
-            var handled = _extractors.FirstOrDefault(x => x.CanHandle(ext));
             bool skipped;
             var added = _store.AddFile(project, p, overwrite, out skipped);
             if (skipped) continue;
@@ -135,6 +144,7 @@ public partial class MainWindow : Window {
         RefreshFiles();
     }
 
+    // 运行查重算法，对项目中的文件进行两两比对
     private void RunCompare_Click(object sender, RoutedEventArgs e) {
         if (ProjectList.SelectedItem is not string project) {
             MessageBox.Show("请先选择项目");
@@ -199,6 +209,7 @@ public partial class MainWindow : Window {
         DisplayResults(pairResults, centerResults, groupedResults);
     }
 
+    // 生成两两分组结果，列出所有相似文件对
     private List<PairDisplayResult> GeneratePairResults(List<PairSimilarity> pairs, List<CodeFileMetadata> files) {
         var fileDict = files.ToDictionary(f => f.Id, f => f.FileName);
         return pairs.Select(p => new PairDisplayResult {
@@ -211,6 +222,7 @@ public partial class MainWindow : Window {
         }).OrderByDescending(p => p.Similarity).ToList();
     }
 
+    // 生成中心分组结果，以连接数最多的文件为中心形成组
     private List<CenterGroupResult> GenerateCenterResults(List<PairSimilarity> pairs, List<CodeFileMetadata> files) {
         var fileDict = files.ToDictionary(f => f.Id, f => f.FileName);
         var centerGroups = new List<CenterGroupResult>();
@@ -284,6 +296,7 @@ public partial class MainWindow : Window {
         return centerGroups.OrderByDescending(g => g.MaxSimilarity).ToList();
     }
 
+    // 生成分组结果，将文件分为无重复和有重复两类
     private GroupedResult GenerateGroupedResults(List<PairSimilarity> pairs, List<CodeFileMetadata> files) {
         var fileDict = files.ToDictionary(f => f.Id, f => f.FileName);
         var duplicateFiles = new HashSet<string>();
@@ -305,6 +318,7 @@ public partial class MainWindow : Window {
         };
     }
 
+    // 在三个标签页中显示查重结果（两两分组、中心分组、分组显示）
     private void DisplayResults(List<PairDisplayResult> pairResults, List<CenterGroupResult> centerResults,
         GroupedResult groupedResult) {
         EnsureResultViews();
@@ -325,6 +339,7 @@ public partial class MainWindow : Window {
         groupedList.ItemsSource = groupedDisplay;
     }
 
+    // 确保结果视图已创建，为三个标签页初始化ListView
     private void EnsureResultViews() {
         // 两两分组视图
         if (((TabItem)ResultTabs.Items[0]).Content == null) {
@@ -370,6 +385,7 @@ public partial class MainWindow : Window {
         }
     }
 
+    // 导出查重结果到CSV文件
     private void ExportResults_Click(object sender, RoutedEventArgs e) {
         if (ProjectList.SelectedItem is not string project) {
             MessageBox.Show("请先选择项目");
@@ -411,6 +427,7 @@ public partial class MainWindow : Window {
             }
     }
 
+    // 打开文件对比窗口，显示两个文件的详细diff
     private void CompareFiles_Click(object sender, RoutedEventArgs e) {
         if (ProjectList.SelectedItem is not string project) {
             MessageBox.Show("请先选择项目");
@@ -430,6 +447,7 @@ public partial class MainWindow : Window {
         compareWindow.ShowDialog();
     }
 
+    // 双击文件列表项时打开文件查看窗口
     private void FileList_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e) {
         if (ProjectList.SelectedItem is not string project) {
             MessageBox.Show("请先选择项目");
@@ -447,14 +465,29 @@ public partial class MainWindow : Window {
         viewWindow.ShowDialog();
     }
 
+    // 预处理文件内容用于查重算法（移除HTML标签、注释、规范化空白）
     private string ProcessFileForComparison(string filePath, string extension) {
         if (!File.Exists(filePath)) return string.Empty;
         
         try {
-            var handler = _extractors.FirstOrDefault(x => x.CanHandle(extension));
-            if (handler == null) return File.ReadAllText(filePath, Encoding.UTF8);
+            string text;
             
-            var text = handler.ExtractText(filePath);
+            // 特殊文件类型需要提取文本
+            var handler = _extractors.FirstOrDefault(x => x.CanHandle(extension));
+            if (handler != null) {
+                // DOCX, PDF等需要特殊处理的文件
+                text = handler.ExtractText(filePath);
+            } else {
+                // 普通文本文件直接读取
+                text = File.ReadAllText(filePath, Encoding.UTF8);
+                
+                // HTML需要移除结构标签
+                if (extension == "html" || extension == "htm") {
+                    text = Preprocess.StripHtmlStructure(text);
+                }
+            }
+            
+            // 统一预处理：移除注释 + 规范化空白
             return Preprocess.NormalizeWhitespace(Preprocess.StripCommentsAndNoise(text, extension));
         }
         catch {

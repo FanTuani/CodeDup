@@ -1,0 +1,56 @@
+<UserControl x:Class="CodeDup.App.Controls.CustomSideBySideDiffViewer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        
+        <!-- 左侧文件 -->
+        <ScrollViewer Grid.Column="0" 
+                     x:Name="LeftScrollViewer"
+                     VerticalScrollBarVisibility="Auto"
+                     HorizontalScrollBarVisibility="Auto"
+                     ScrollChanged="ScrollViewer_ScrollChanged">
+            <ItemsControl x:Name="LeftItemsControl" 
+                         Background="White">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="#FFE0E0E0" BorderThickness="0,0,0,1">
+                            <TextBlock TextWrapping="NoWrap" 
+                                      Padding="5,2"
+                                      FontFamily="Consolas"
+                                      FontSize="12"/>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+        
+        <!-- 右侧文件 -->
+        <ScrollViewer Grid.Column="1" 
+                     x:Name="RightScrollViewer"
+                     VerticalScrollBarVisibility="Auto"
+                     HorizontalScrollBarVisibility="Auto"
+                     ScrollChanged="ScrollViewer_ScrollChanged">
+            <ItemsControl x:Name="RightItemsControl" 
+                         Background="White">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="#FFE0E0E0" BorderThickness="0,0,0,1">
+                            <TextBlock TextWrapping="NoWrap" 
+                                      Padding="5,2"
+                                      FontFamily="Consolas"
+                                      FontSize="12"/>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
