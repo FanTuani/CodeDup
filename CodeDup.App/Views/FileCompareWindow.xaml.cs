@@ -35,8 +35,15 @@ public partial class FileCompareWindow : Window {
             var fileAPath = _store.GetFileContentPath(_project, _pair.FileIdA);
             var fileBPath = _store.GetFileContentPath(_project, _pair.FileIdB);
 
-            _contentA = File.Exists(fileAPath) ? File.ReadAllText(fileAPath, System.Text.Encoding.UTF8) : "文件不存在";
-            _contentB = File.Exists(fileBPath) ? File.ReadAllText(fileBPath, System.Text.Encoding.UTF8) : "文件不存在";
+            var rawContentA = File.Exists(fileAPath) ? File.ReadAllText(fileAPath, System.Text.Encoding.UTF8) : "文件不存在";
+            var rawContentB = File.Exists(fileBPath) ? File.ReadAllText(fileBPath, System.Text.Encoding.UTF8) : "文件不存在";
+
+            // 剔除注释后显示
+            var extensionA = Path.GetExtension(_pair.FileNameA).TrimStart('.');
+            var extensionB = Path.GetExtension(_pair.FileNameB).TrimStart('.');
+            
+            _contentA = Preprocess.StripCommentsAndNoise(rawContentA, extensionA);
+            _contentB = Preprocess.StripCommentsAndNoise(rawContentB, extensionB);
 
             // 初始显示内联模式
             UpdateDiffView();
