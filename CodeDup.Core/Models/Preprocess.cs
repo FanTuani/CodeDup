@@ -169,21 +169,4 @@ public static class Preprocess {
         // 如果标签名合法且不含属性，则认为是简单标签
         return inner.Length > 0 && inner.All(c => char.IsLetterOrDigit(c) || c == '-' || c == '_');
     }
-
-    public static string NormalizeWhitespace(string text) {
-        var sb = new StringBuilder();
-        var lastSpace = false;
-        foreach (var ch in text)
-            if (char.IsWhiteSpace(ch)) {
-                if (!lastSpace) {
-                    sb.Append(' ');
-                    lastSpace = true;
-                }
-            } else {
-                sb.Append(ch);
-                lastSpace = false;
-            }
-
-        return sb.ToString().Trim();
-    }
 }

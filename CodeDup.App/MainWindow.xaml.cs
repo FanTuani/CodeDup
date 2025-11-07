@@ -487,8 +487,25 @@ public partial class MainWindow : Window {
                 }
             }
             
-            // 统一预处理：移除注释 + 规范化空白
-            return Preprocess.NormalizeWhitespace(Preprocess.StripCommentsAndNoise(text, extension));
+            // 统一预处理：移除注释
+            text = Preprocess.StripCommentsAndNoise(text, extension);
+            
+            // 规范化空白（将多个空白字符替换为单个空格）
+            var sb = new StringBuilder();
+            var lastSpace = false;
+            foreach (var ch in text) {
+                if (char.IsWhiteSpace(ch)) {
+                    if (!lastSpace) {
+                        sb.Append(' ');
+                        lastSpace = true;
+                    }
+                } else {
+                    sb.Append(ch);
+                    lastSpace = false;
+                }
+            }
+            
+            return sb.ToString().Trim();
         }
         catch {
             return string.Empty;
