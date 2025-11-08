@@ -1,0 +1,84 @@
+# CodeDup 使用说明
+
+## 快速开始
+
+1. 解压文件到任意目录
+2. 双击运行 `CodeDup.App.exe`
+
+## AI 分析功能配置（可选）
+
+如果需要使用 AI 智能分析功能，请按以下步骤配置：
+
+### 步骤 1：获取 API Key
+访问 [DeepSeek 开放平台](https://platform.deepseek.com/) 注册并获取 API Key
+
+### 步骤 2：配置 API Key
+
+在程序所在目录下，找到 `appsettings.local.example.json` 文件：
+
+1. **复制文件**
+   - 将 `appsettings.local.example.json` 复制一份
+   - 重命名为 `appsettings.local.json`
+
+2. **编辑配置**
+   - 用记事本或任意文本编辑器打开 `appsettings.local.json`
+   - 将 `your-api-key-here` 替换为你的 API Key
+   - 保存文件
+
+配置文件示例：
+```json
+{
+  "DeepSeek": {
+    "ApiKey": "sk-xxxxxxxxxxxxxxxxxxxxxxxx",
+    "Endpoint": "https://api.deepseek.com/v1/chat/completions",
+    "Model": "deepseek-chat"
+  }
+}
+```
+
+### 步骤 3：重启程序
+
+配置完成后，重启 CodeDup，即可使用 AI 分析功能。
+
+## 注意事项
+
+- 如果不配置 API Key，程序的其他功能仍可正常使用
+- AI 分析功能需要网络连接
+- 配置文件 `appsettings.local.json` 仅存储在本地，不会上传
+
+## 功能说明
+
+### 1. 创建项目
+- 点击"新建项目"按钮
+- 输入项目名称
+- 拖拽文件到界面中导入
+
+### 2. 开始查重
+- 选择查重算法（推荐 Winnowing）
+- 设置相似度阈值（0-1之间，默认 0.8）
+- 点击"开始查重"
+
+### 3. 查看结果
+- 两两对比：查看所有文件对的相似度
+- 中心聚类：找出被多次重复的中心文件
+- 分组结果：查看完全重复的文件组
+
+### 4. AI 分析（需配置 API Key）
+- 在查重结果页面点击"重复代码分析"
+- 点击"生成 AI 分析报告"
+- 查看智能分析结果
+
+## 常见问题
+
+**Q: 提示"API Key 未配置"怎么办？**
+A: 按照上述步骤配置 `appsettings.local.json` 文件
+
+**Q: AI 分析失败怎么办？**
+A: 检查网络连接和 API Key 是否正确，确保有足够的 API 额度
+
+**Q: 支持哪些文件格式？**
+A: 支持 .cs, .py, .java, .cpp, .c, .js, .html, .txt, .docx, .pdf 等
+
+## 技术支持
+
+如有问题，请访问项目主页：https://github.com/FanTuani/CodeDup

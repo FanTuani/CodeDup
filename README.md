@@ -24,6 +24,34 @@ CodeDup 是一个功能强大的代码查重工具，支持多种编程语言和
   - 实时文件对比
   - 结果导出
 
+- **AI 分析报告**（可选）
+  - 基于 DeepSeek API 的智能分析
+  - 自动识别重复代码的严重程度和成因
+
+## 配置 API Key（可选）
+
+如果需要使用 AI 分析功能，请按以下步骤配置：
+
+1. 复制 `appsettings.local.example.json` 为 `appsettings.local.json`
+   ```bash
+   copy appsettings.local.example.json appsettings.local.json
+   ```
+
+2. 在 `appsettings.local.json` 中填入你的 DeepSeek API Key：
+   ```json
+   {
+     "DeepSeek": {
+       "ApiKey": "your-api-key-here",
+       "Endpoint": "https://api.deepseek.com/v1/chat/completions",
+       "Model": "deepseek-chat"
+     }
+   }
+   ```
+
+3. `appsettings.local.json` 已被添加到 `.gitignore`，不会被提交到 Git
+
+> 注意：如果不配置 API Key，其他功能仍可正常使用，只是无法生成 AI 分析报告。
+
 ## 使用方法
 
    - 创建新项目

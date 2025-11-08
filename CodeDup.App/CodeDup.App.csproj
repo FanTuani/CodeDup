@@ -11,6 +11,13 @@
       <PackageReference Include="DiffPlex.Wpf" Version="1.9.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <!-- 复制配置文件到输出目录 -->
+      <None Include="..\appsettings.local.json" CopyToOutputDirectory="PreserveNewest" Condition="Exists('..\appsettings.local.json')" />
+      <!-- 发布时始终包含示例配置文件 -->
+      <None Include="..\appsettings.local.example.json" CopyToOutputDirectory="Always" />
+    </ItemGroup>
+
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
         <TargetFramework>net8.0-windows</TargetFramework>

@@ -130,8 +130,17 @@ public partial class DuplicateCodeAnalysisWindow : Window {
             }
         }
         catch (Exception ex) {
-            AppendRichText($"\n\n生成报告失败：{ex.Message}");
-            MessageBox.Show($"生成报告失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+            var errorMessage = ex.Message;
+            
+            // 检查是否是 API Key 未配置的情况
+            if (errorMessage.Contains("your-api-key-here") || errorMessage.Contains("API 返回错误 401")) {
+                errorMessage = "API Key 未配置或无效。\n\n" +
+                              "请在程序目录下编辑 appsettings.local.json 文件，填入你的 DeepSeek API Key。\n\n" +
+                              "如果文件不存在，请参考 appsettings.local.example.json 创建。";
+            }
+            
+            AppendRichText($"\n\n生成报告失败：{errorMessage}");
+            MessageBox.Show($"生成报告失败:\n\n{errorMessage}", "错误", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
         finally {
             // 恢复按钮状态

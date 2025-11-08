@@ -8,19 +8,81 @@ namespace CodeDup.Core.Services;
 
 // AI 分析服务 - DeepSeek API
 public class AiAnalysisService {
-    // ====== 配置区域 - 修改这里的 API Key ======
-    private const string API_KEY = "sk-ac5e0f87a85c460b994348ee7ca0b177";  // 替换为你的 DeepSeek API Key
-    private const string API_ENDPOINT = "https://api.deepseek.com/v1/chat/completions";
-    private const string MODEL_NAME = "deepseek-chat";
-    // ==========================================
-    
+    private readonly string _apiKey;
+    private readonly string _apiEndpoint;
+    private readonly string _modelName;
     private readonly HttpClient _httpClient;
 
     public AiAnalysisService() {
+        // 从配置文件加载 API Key
+        var config = LoadConfiguration();
+        _apiKey = config.ApiKey;
+        _apiEndpoint = config.Endpoint;
+        _modelName = config.Model;
+        
         _httpClient = new HttpClient {
             Timeout = TimeSpan.FromMinutes(2)  // API 调用超时 2 分钟
         };
-        _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {API_KEY}");
+        _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {_apiKey}");
+    }
+    
+    // 加载配置文件
+    private DeepSeekConfig LoadConfiguration() {
+        // 查找配置文件（优先使用 appsettings.local.json）
+        var configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.local.json");
+        var examplePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.local.example.json");
+        
+        if (!File.Exists(configPath)) {
+            // 如果示例文件存在但用户配置不存在，自动创建
+            if (File.Exists(examplePath)) {
+                try {
+                    File.Copy(examplePath, configPath);
+                    // 使用默认值并提示用户配置
+                    return new DeepSeekConfig {
+                        ApiKey = "your-api-key-here",  // 需要用户配置
+                        Endpoint = "https://api.deepseek.com/v1/chat/completions",
+                        Model = "deepseek-chat"
+                    };
+                }
+                catch {
+                    // 复制失败，返回默认值
+                }
+            }
+            
+            // 如果本地配置不存在，回退到默认值
+            return new DeepSeekConfig {
+                ApiKey = "your-api-key-here",  // 默认值，需要用户配置
+                Endpoint = "https://api.deepseek.com/v1/chat/completions",
+                Model = "deepseek-chat"
+            };
+        }
+        
+        try {
+            var json = File.ReadAllText(configPath);
+            var config = JsonSerializer.Deserialize<ConfigRoot>(json);
+            return config?.DeepSeek ?? throw new Exception("配置文件格式错误");
+        }
+        catch (Exception ex) {
+            throw new Exception($"加载配置文件失败：{ex.Message}。请检查 appsettings.local.json 格式是否正确。");
+        }
+    }
+
+    
+    // 配置类
+    private class ConfigRoot {
+        [JsonPropertyName("DeepSeek")]
+        public DeepSeekConfig? DeepSeek { get; set; }
+    }
+    
+    private class DeepSeekConfig {
+        [JsonPropertyName("ApiKey")]
+        public string ApiKey { get; set; } = string.Empty;
+        
+        [JsonPropertyName("Endpoint")]
+        public string Endpoint { get; set; } = string.Empty;
+        
+        [JsonPropertyName("Model")]
+        public string Model { get; set; } = string.Empty;
     }
 
     // 分析重复代码并生成报告（流式传输版本）
@@ -107,7 +169,7 @@ public class AiAnalysisService {
     // 实际的流式 API 调用实现
     private async IAsyncEnumerable<string> CallDeepSeekApiStreamInternal(string prompt) {
         var requestBody = new {
-            model = MODEL_NAME,
+            model = _modelName,
             messages = new[] {
                 new { role = "user", content = prompt }
             },
@@ -116,7 +178,7 @@ public class AiAnalysisService {
             stream = true  // 启用流式传输
         };
 
-        var request = new HttpRequestMessage(HttpMethod.Post, API_ENDPOINT) {
+        var request = new HttpRequestMessage(HttpMethod.Post, _apiEndpoint) {
             Content = JsonContent.Create(requestBody)
         };
 
@@ -169,7 +231,7 @@ public class AiAnalysisService {
     // 调用 DeepSeek API（非流式，已废弃，保留用于向后兼容）
     private async Task<string> CallDeepSeekApi(string prompt) {
         var requestBody = new {
-            model = MODEL_NAME,
+            model = _modelName,
             messages = new[] {
                 new { role = "user", content = prompt }
             },
@@ -177,7 +239,7 @@ public class AiAnalysisService {
             max_tokens = 2000  // 限制输出长度
         };
 
-        var response = await _httpClient.PostAsJsonAsync(API_ENDPOINT, requestBody);
+        var response = await _httpClient.PostAsJsonAsync(_apiEndpoint, requestBody);
         
         if (!response.IsSuccessStatusCode) {
             var error = await response.Content.ReadAsStringAsync();

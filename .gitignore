@@ -110,3 +110,6 @@ orleans.codegen.cs
 [Dd]ata/
 [Ee]xports/
 TestResults/
+
+# API Keys and sensitive configuration
+appsettings.local.json

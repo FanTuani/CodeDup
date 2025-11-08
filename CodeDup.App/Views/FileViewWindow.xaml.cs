@@ -2,6 +2,7 @@ using System.IO;
 using System.Windows;
 using CodeDup.Core.Models;
 using CodeDup.Core.Storage;
+using CodeDup.Text.Extractors;
 using ICSharpCode.AvalonEdit.Highlighting;
 
 namespace CodeDup.App.Views;
@@ -10,6 +11,8 @@ public partial class FileViewWindow : Window {
     private readonly CodeFileMetadata _file;
     private readonly string _project;
     private readonly IProjectStore _store;
+    private readonly TextExtractorPdf _pdfExtractor = new();
+    private readonly TextExtractorDocx _docxExtractor = new();
 
     public FileViewWindow(string project, CodeFileMetadata file, IProjectStore store) {
         InitializeComponent();
@@ -31,22 +34,45 @@ public partial class FileViewWindow : Window {
             // 加载文件原始内容
             var filePath = _store.GetFileContentPath(_project, _file.Id);
             
-            if (File.Exists(filePath)) {
-                var content = File.ReadAllText(filePath, System.Text.Encoding.UTF8);
+            if (!File.Exists(filePath)) {
+                FileContentBox.Text = "文件不存在或已被删除";
+                return;
+            }
+
+            string content;
+            var extension = _file.Extension.ToLower();
+            
+            // 根据文件类型使用不同的读取方式
+            if (extension == "pdf" && _pdfExtractor.CanHandle(extension)) {
+                // 使用 PDF 提取器
+                content = _pdfExtractor.ExtractText(filePath);
+                if (string.IsNullOrWhiteSpace(content)) {
+                    content = "无法提取 PDF 文本内容（可能是扫描版或图片 PDF）";
+                }
+            }
+            else if (extension == "docx" && _docxExtractor.CanHandle(extension)) {
+                // 使用 DOCX 提取器
+                content = _docxExtractor.ExtractText(filePath);
+                if (string.IsNullOrWhiteSpace(content)) {
+                    content = "DOCX 文件为空或无法读取";
+                }
+            }
+            else {
+                // 普通文本文件，直接读取
+                content = File.ReadAllText(filePath, System.Text.Encoding.UTF8);
                 
                 // 根据文件扩展名设置语法高亮
-                var syntaxHighlighting = GetSyntaxHighlighting(_file.Extension);
+                var syntaxHighlighting = GetSyntaxHighlighting(extension);
                 if (syntaxHighlighting != null) {
                     FileContentBox.SyntaxHighlighting = syntaxHighlighting;
                 }
-                
-                FileContentBox.Text = content;
-            } else {
-                FileContentBox.Text = "文件不存在或已被删除";
             }
+            
+            FileContentBox.Text = content;
         }
         catch (Exception ex) {
             MessageBox.Show($"加载文件内容时出错: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+            FileContentBox.Text = $"加载失败：{ex.Message}";
         }
     }
 
