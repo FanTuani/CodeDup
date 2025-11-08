@@ -1,15 +1,22 @@
 using System.Text;
 using CodeDup.Core.Models;
 using CodeDup.Core.Storage;
+using CodeDup.Text.Extractors;
 
 namespace CodeDup.Core.Services;
 
 // 重复代码分析服务
 public class DuplicateCodeAnalyzer {
     private readonly IProjectStore _store;
+    private readonly List<ITextExtractor> _textExtractors;
 
     public DuplicateCodeAnalyzer(IProjectStore store) {
         _store = store;
+        // 初始化文本提取器（支持 PDF、DOCX 等特殊格式）
+        _textExtractors = new List<ITextExtractor> {
+            new TextExtractorPdf(),
+            new TextExtractorDocx()
+        };
     }
 
     // 分析重复代码片段
@@ -30,8 +37,18 @@ public class DuplicateCodeAnalyzer {
             var filePath = _store.GetFileContentPath(project, fileId);
             if (File.Exists(filePath)) {
                 try {
-                    var content = File.ReadAllText(filePath, Encoding.UTF8);
                     var extension = fileDict[fileId].Extension;
+                    
+                    // 使用文本提取器读取文件（支持 PDF、DOCX 等）
+                    string content;
+                    var extractor = _textExtractors.FirstOrDefault(e => e.CanHandle(extension));
+                    if (extractor != null) {
+                        // 使用特殊提取器（PDF、DOCX 等）
+                        content = extractor.ExtractText(filePath);
+                    } else {
+                        // 普通文本文件
+                        content = File.ReadAllText(filePath, Encoding.UTF8);
+                    }
                     
                     // 预处理：移除注释和噪音
                     content = Preprocess.StripCommentsAndNoise(content, extension);

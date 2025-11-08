@@ -6,7 +6,17 @@ public class DuplicateCodeFragment {
     public int OccurrenceCount { get; set; }             // 出现次数
     public List<CodeLocation> Locations { get; set; } = new();  // 出现位置
     public int LineCount { get; set; }                   // 代码行数
-    public string PreviewText => Content.Length > 100 ? Content.Substring(0, 100) + "..." : Content;
+    
+    // 代码预览（去除前缀空格和制表符）
+    public string PreviewText {
+        get {
+            var preview = Content.Length > 100 ? Content.Substring(0, 100) + "..." : Content;
+            // 将每行前缀的空格和 tab 去掉
+            var lines = preview.Split('\n');
+            var trimmedLines = lines.Select(line => line.TrimStart(' ', '\t', '\r'));
+            return string.Join("\n", trimmedLines).Trim();
+        }
+    }
 }
 
 // 代码位置

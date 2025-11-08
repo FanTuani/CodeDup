@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\CodeDup.Text\CodeDup.Text.csproj" />
+    </ItemGroup>
+
 </Project>
