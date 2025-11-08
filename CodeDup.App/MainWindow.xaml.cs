@@ -29,7 +29,7 @@ public partial class MainWindow : Window {
         InitializeComponent();
         _store = AppBootstrap.CreateStore();
         RefreshProjects();
-        AlgoCombo.SelectedIndex = 0;
+        AlgoCombo.SelectedIndex = 1;
     }
 
     // 刷新项目列表，从存储中加载所有项目

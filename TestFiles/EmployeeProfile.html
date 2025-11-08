@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>员工档案</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #2196F3;
+            padding-bottom: 10px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #2196F3;
+        }
+        .btn-submit {
+            background-color: #2196F3;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        .btn-submit:hover {
+            background-color: #0b7dda;
+        }
+        .btn-cancel {
+            background-color: #999;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .btn-cancel:hover {
+            background-color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>员工档案管理</h1>
+        <form id="employeeForm">
+            <div class="form-group">
+                <label for="empname">员工姓名：</label>
+                <input type="text" id="empname" name="empname" required placeholder="请输入员工姓名">
+            </div>
+            
+            <div class="form-group">
+                <label for="email">电子邮箱：</label>
+                <input type="email" id="email" name="email" required placeholder="example@company.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">联系电话：</label>
+                <input type="tel" id="phone" name="phone" placeholder="请输入联系电话">
+            </div>
+            
+            <div class="form-group">
+                <label for="department">所属部门：</label>
+                <select id="department" name="department">
+                    <option value="">请选择</option>
+                    <option value="tech">技术部</option>
+                    <option value="sales">销售部</option>
+                    <option value="hr">人力资源部</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="joindate">入职日期：</label>
+                <input type="date" id="joindate" name="joindate">
+            </div>
+            
+            <div class="form-group">
+                <label for="address">家庭住址：</label>
+                <textarea id="address" name="address" rows="3" placeholder="请输入家庭住址"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="notes">备注信息：</label>
+                <textarea id="notes" name="notes" rows="5" placeholder="其他需要记录的信息..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <button type="submit" class="btn-submit">保存档案</button>
+                <button type="button" class="btn-cancel" onclick="history.back()">取消</button>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        document.getElementById('employeeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                empname: document.getElementById('empname').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                department: document.getElementById('department').value,
+                joindate: document.getElementById('joindate').value,
+                address: document.getElementById('address').value,
+                notes: document.getElementById('notes').value
+            };
+            
+            console.log('提交的数据：', formData);
+            alert('员工档案已保存！');
+        });
+    </script>
+</body>
+</html>
