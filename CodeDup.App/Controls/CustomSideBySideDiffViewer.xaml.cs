@@ -55,27 +55,30 @@ public partial class CustomSideBySideDiffViewer : UserControl {
             FontSize = 12
         };
 
+        // 将 Tab 转换为 4 个空格
+        var processedText = line.Text?.Replace("\t", "    ");
+
         // 根据行的类型设置样式
         switch (line.Type) {
             case ChangeType.Unchanged:
                 // 重复的行 - 使用黄色背景高亮文字部分
-                AddHighlightedText(textBlock, line.Text, extension);
+                AddHighlightedText(textBlock, processedText, extension);
                 break;
             case ChangeType.Deleted:
             case ChangeType.Inserted:
                 // 不同的行 - 灰色文字，无背景
                 textBlock.Foreground = new SolidColorBrush(Color.FromRgb(153, 153, 153));
-                textBlock.Text = line.Text ?? string.Empty;
+                textBlock.Text = processedText ?? string.Empty;
                 break;
             case ChangeType.Imaginary:
                 // 占位行
                 textBlock.Foreground = new SolidColorBrush(Color.FromRgb(204, 204, 204));
-                textBlock.Text = line.Text ?? string.Empty;
+                textBlock.Text = processedText ?? string.Empty;
                 break;
             case ChangeType.Modified:
                 // 修改的行 - 灰色文字
                 textBlock.Foreground = new SolidColorBrush(Color.FromRgb(153, 153, 153));
-                textBlock.Text = line.Text ?? string.Empty;
+                textBlock.Text = processedText ?? string.Empty;
                 break;
         }
 

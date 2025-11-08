@@ -1,6 +1,7 @@
 using System.Text;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
 using UglyToad.PdfPig;
-using Xceed.Words.NET;
 
 namespace CodeDup.Text.Extractors;
 
@@ -10,9 +11,19 @@ public class TextExtractorDocx : ITextExtractor {
     }
 
     public string ExtractText(string filePath) {
-        using var doc = DocX.Load(filePath);
         var text = new StringBuilder();
-        foreach (var p in doc.Paragraphs) text.AppendLine(p.Text);
+        try {
+            using var doc = WordprocessingDocument.Open(filePath, false);
+            var body = doc.MainDocumentPart?.Document.Body;
+            if (body != null) {
+                foreach (var paragraph in body.Descendants<Paragraph>()) {
+                    text.AppendLine(paragraph.InnerText);
+                }
+            }
+        } catch (Exception ex) {
+            // 如果读取失败，返回错误信息
+            return $"读取 DOCX 文件失败: {ex.Message}";
+        }
         return text.ToString();
     }
 }

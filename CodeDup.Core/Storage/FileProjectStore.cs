@@ -96,7 +96,6 @@ public class FileProjectStore : IProjectStore {
     private string GetMetaPath(string projectName) {
         return Path.Combine(GetProjectDir(projectName), "metadata.json");
     }
-
     private void SaveMeta(string projectName, List<CodeFileMetadata> items) {
         var metaPath = GetMetaPath(projectName);
         Directory.CreateDirectory(Path.GetDirectoryName(metaPath)!);

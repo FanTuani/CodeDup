@@ -101,7 +101,7 @@ public partial class MainWindow : Window {
         }
 
         var dlg = new OpenFileDialog {
-            Filter = "All Supported|*.txt;*.cs;*.py;*.html;*.pdf;*.cpp;*.c",
+            Filter = "All Supported|*.txt;*.cs;*.py;*.html;*.pdf;*.cpp;*.c;*.docx",
             Multiselect = true
         };
         if (dlg.ShowDialog() == true) ImportPaths(project, dlg.FileNames);
