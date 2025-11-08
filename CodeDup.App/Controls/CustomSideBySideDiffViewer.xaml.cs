@@ -76,9 +76,8 @@ public partial class CustomSideBySideDiffViewer : UserControl {
                 textBlock.Text = processedText ?? string.Empty;
                 break;
             case ChangeType.Modified:
-                // 修改的行 - 灰色文字
-                textBlock.Foreground = new SolidColorBrush(Color.FromRgb(153, 153, 153));
-                textBlock.Text = processedText ?? string.Empty;
+                // 修改的行 - 使用字符级别的精确高亮
+                AddCharacterLevelHighlight(textBlock, line, extension);
                 break;
         }
 
@@ -104,6 +103,53 @@ public partial class CustomSideBySideDiffViewer : UserControl {
             Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0)) // 黑色文字
         };
         textBlock.Inlines.Add(run);
+    }
+
+    private void AddCharacterLevelHighlight(TextBlock textBlock, DiffPiece line, string? extension) {
+        var processedText = line.Text?.Replace("\t", "    ");
+        
+        // 检查是否是无意义的行
+        if (Preprocess.IsTrivialLine(processedText, extension)) {
+            textBlock.Text = processedText ?? string.Empty;
+            textBlock.Foreground = new SolidColorBrush(Color.FromRgb(153, 153, 153));
+            return;
+        }
+
+        // 如果有 SubPieces，使用字符级别的差异信息
+        if (line.SubPieces != null && line.SubPieces.Any()) {
+            foreach (var piece in line.SubPieces) {
+                var pieceText = piece.Text?.Replace("\t", "    ");
+                if (string.IsNullOrEmpty(pieceText)) continue;
+
+                var run = new Run(pieceText);
+                
+                switch (piece.Type) {
+                    case ChangeType.Unchanged:
+                        // 相同的部分 - 检查是否应该高亮
+                        // 如果去掉空格后长度小于2，则不高亮
+                        var trimmedLength = pieceText.Replace(" ", "").Length;
+                        if (trimmedLength < 2) {
+                            run.Foreground = new SolidColorBrush(Color.FromRgb(153, 153, 153));
+                        } else {
+                            run.Background = new SolidColorBrush(Color.FromArgb(255, 255, 235, 59));
+                            run.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+                        }
+                        break;
+                    case ChangeType.Deleted:
+                    case ChangeType.Inserted:
+                    case ChangeType.Modified:
+                        // 不同的部分 - 灰色文字，无背景
+                        run.Foreground = new SolidColorBrush(Color.FromRgb(153, 153, 153));
+                        break;
+                }
+                
+                textBlock.Inlines.Add(run);
+            }
+        } else {
+            // 没有 SubPieces 信息时，整行显示为灰色
+            textBlock.Text = processedText ?? string.Empty;
+            textBlock.Foreground = new SolidColorBrush(Color.FromRgb(153, 153, 153));
+        }
     }
 
     private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e) {
