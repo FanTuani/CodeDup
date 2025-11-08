@@ -20,6 +20,7 @@
             <TextBox x:Name="ThresholdBox" Width="80" Text="0.6" />
             <Button Content="开始查重" Click="RunCompare_Click" />
             <Separator />
+            <Button Content="分析重复代码" Click="AnalyzeDuplicateCode_Click" />
             <Button Content="导出结果" Click="ExportResults_Click" />
             <!-- <Button Content="双文件对比" Click="CompareFiles_Click"/> 已被双击结果代替-->
         </ToolBar>

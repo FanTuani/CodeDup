@@ -339,6 +339,25 @@ public partial class MainWindow : Window {
         groupedList.ItemsSource = groupedDisplay;
     }
 
+    // 分析重复代码按钮点击事件
+    private void AnalyzeDuplicateCode_Click(object sender, RoutedEventArgs e) {
+        if (ProjectList.SelectedItem is not string project) {
+            MessageBox.Show("请先选择项目", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+
+        var files = _store.ListFiles(project).ToList();
+        if (files.Count < 2) {
+            MessageBox.Show("项目中至少需要 2 个文件才能进行重复代码分析", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+
+        var fileIds = files.Select(f => f.Id).ToList();
+        var analysisWindow = new DuplicateCodeAnalysisWindow(project, fileIds, files, _store);
+        analysisWindow.Owner = this;
+        analysisWindow.ShowDialog();
+    }
+
     // 确保结果视图已创建，为三个标签页初始化ListView
     private void EnsureResultViews() {
         // 两两分组视图
