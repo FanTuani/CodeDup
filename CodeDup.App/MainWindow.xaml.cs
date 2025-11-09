@@ -3,6 +3,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using ClosedXML.Excel;
 using CodeDup.Algorithms.Shingle;
 using CodeDup.Algorithms.SimHash;
 using CodeDup.Algorithms.Winnowing;
@@ -23,6 +24,11 @@ public partial class MainWindow : Window {
     };
 
     private readonly IProjectStore _store;
+    
+    // 存储所有算法的查重结果
+    private readonly Dictionary<string, List<PairDisplayResult>> _allPairResults = new();
+    private readonly Dictionary<string, List<CenterGroupResult>> _allCenterResults = new();
+    private readonly Dictionary<string, GroupedResult> _allGroupedResults = new();
 
     // 初始化主窗口，加载项目列表并设置默认算法
     public MainWindow() {
@@ -154,6 +160,11 @@ public partial class MainWindow : Window {
         if (!double.TryParse(ThresholdBox.Text, out var threshold)) threshold = 0.8;
         var algo = (AlgoCombo.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Winnowing";
 
+        RunCompareForAlgorithm(project, algo, threshold);
+    }
+
+    // 为指定算法运行查重
+    private void RunCompareForAlgorithm(string project, string algo, double threshold) {
         var files = _store.ListFiles(project).ToList();
         var pairs = new List<PairSimilarity>();
         for (var i = 0; i < files.Count; i++)
@@ -204,6 +215,11 @@ public partial class MainWindow : Window {
         var pairResults = GeneratePairResults(pairs, files);
         var centerResults = GenerateCenterResults(pairs, files);
         var groupedResults = GenerateGroupedResults(pairs, files);
+
+        // 保存当前算法的结果
+        _allPairResults[algo] = pairResults;
+        _allCenterResults[algo] = centerResults;
+        _allGroupedResults[algo] = groupedResults;
 
         // 显示结果
         DisplayResults(pairResults, centerResults, groupedResults);
@@ -404,46 +420,215 @@ public partial class MainWindow : Window {
         }
     }
 
-    // 导出查重结果到CSV文件
+    // 导出查重结果到Excel文件
     private void ExportResults_Click(object sender, RoutedEventArgs e) {
         if (ProjectList.SelectedItem is not string project) {
             MessageBox.Show("请先选择项目");
             return;
         }
 
+        var files = _store.ListFiles(project).ToList();
+        if (files.Count < 2) {
+            MessageBox.Show("项目中至少需要 2 个文件才能进行查重分析", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+
+        // 获取阈值
+        if (!double.TryParse(ThresholdBox.Text, out var threshold)) threshold = 0.8;
+
         var saveDialog = new SaveFileDialog {
-            Filter = "CSV文件|*.csv|文本文件|*.txt",
-            DefaultExt = "csv",
+            Filter = "Excel文件|*.xlsx|CSV文件|*.csv",
+            DefaultExt = "xlsx",
             FileName = $"查重结果_{project}_{DateTime.Now:yyyyMMdd_HHmmss}"
         };
 
-        if (saveDialog.ShowDialog() == true)
+        if (saveDialog.ShowDialog() == true) {
             try {
-                var files = _store.ListFiles(project).ToList();
-                var content = new StringBuilder();
-
-                // 添加文件信息
-                content.AppendLine("文件列表:");
-                content.AppendLine("文件名,语言,大小(字节),导入时间");
-                foreach (var file in files)
-                    content.AppendLine(
-                        $"{file.FileName},{file.ProgrammingLanguage},{file.FileSizeBytes},{file.ImportedAt:yyyy-MM-dd HH:mm:ss}");
-
-                // 添加查重结果（如果有的话）
-                var pairList = (ListView)((TabItem)ResultTabs.Items[0]).Content;
-                if (pairList?.ItemsSource is IEnumerable<PairDisplayResult> pairs) {
-                    content.AppendLine("\n查重结果:");
-                    content.AppendLine("文件A,文件B,相似度,算法");
-                    foreach (var pair in pairs)
-                        content.AppendLine($"{pair.FileNameA},{pair.FileNameB},{pair.Similarity:F4},{pair.Algorithm}");
+                // 在导出前，自动运行三种算法
+                MessageBox.Show("正在运行三种算法进行查重分析，请稍候...", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                
+                // 运行三种算法
+                RunCompareForAlgorithm(project, "Winnowing", threshold);
+                RunCompareForAlgorithm(project, "SimHash", threshold);
+                RunCompareForAlgorithm(project, "ShingleCosine", threshold);
+                
+                var extension = Path.GetExtension(saveDialog.FileName).ToLower();
+                
+                if (extension == ".xlsx") {
+                    ExportToExcel(saveDialog.FileName, project);
+                } else {
+                    ExportToCsv(saveDialog.FileName, project);
                 }
-
-                File.WriteAllText(saveDialog.FileName, content.ToString(), Encoding.UTF8);
-                MessageBox.Show($"结果已导出到: {saveDialog.FileName}", "导出成功");
             }
             catch (Exception ex) {
                 MessageBox.Show($"导出失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+    }
+
+    // 导出到Excel文件，每个算法一个工作表
+    private void ExportToExcel(string filePath, string project) {
+        var files = _store.ListFiles(project).ToList();
+        
+        using var workbook = new XLWorkbook();
+        
+        // 导出所有算法的查重结果
+        foreach (var algo in new[] { "Winnowing", "SimHash", "ShingleCosine" }) {
+            if (!_allPairResults.TryGetValue(algo, out var pairs) || pairs.Count == 0) {
+                continue; // 跳过没有结果的算法
+            }
+            
+            var worksheet = workbook.Worksheets.Add(algo);
+            
+            // 添加文件信息
+            worksheet.Cell(1, 1).Value = "文件列表";
+            worksheet.Cell(1, 1).Style.Font.Bold = true;
+            worksheet.Cell(2, 1).Value = "文件名";
+            worksheet.Cell(2, 2).Value = "语言";
+            worksheet.Cell(2, 3).Value = "大小(字节)";
+            worksheet.Cell(2, 4).Value = "导入时间";
+            worksheet.Range(2, 1, 2, 4).Style.Font.Bold = true;
+            worksheet.Range(2, 1, 2, 4).Style.Fill.BackgroundColor = XLColor.LightGray;
+            
+            int currentRow = 3;
+            foreach (var file in files) {
+                worksheet.Cell(currentRow, 1).Value = file.FileName;
+                worksheet.Cell(currentRow, 2).Value = file.ProgrammingLanguage;
+                worksheet.Cell(currentRow, 3).Value = file.FileSizeBytes;
+                worksheet.Cell(currentRow, 4).Value = file.ImportedAt.ToString("yyyy-MM-dd HH:mm:ss");
+                currentRow++;
+            }
+            
+            // 添加两两分组查重结果
+            currentRow += 2;
+            worksheet.Cell(currentRow, 1).Value = "两两分组查重结果";
+            worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
+            currentRow++;
+            
+            worksheet.Cell(currentRow, 1).Value = "文件A";
+            worksheet.Cell(currentRow, 2).Value = "文件B";
+            worksheet.Cell(currentRow, 3).Value = "相似度";
+            worksheet.Cell(currentRow, 4).Value = "算法";
+            worksheet.Range(currentRow, 1, currentRow, 4).Style.Font.Bold = true;
+            worksheet.Range(currentRow, 1, currentRow, 4).Style.Fill.BackgroundColor = XLColor.LightBlue;
+            currentRow++;
+            
+            foreach (var pair in pairs) {
+                worksheet.Cell(currentRow, 1).Value = pair.FileNameA;
+                worksheet.Cell(currentRow, 2).Value = pair.FileNameB;
+                worksheet.Cell(currentRow, 3).Value = pair.Similarity;
+                worksheet.Cell(currentRow, 4).Value = pair.Algorithm;
+                currentRow++;
+            }
+            
+            // 添加中心分组查重结果
+            if (_allCenterResults.TryGetValue(algo, out var centerGroups) && centerGroups.Count > 0) {
+                currentRow += 2;
+                worksheet.Cell(currentRow, 1).Value = "中心分组查重结果";
+                worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
+                currentRow++;
+                
+                worksheet.Cell(currentRow, 1).Value = "中心文件";
+                worksheet.Cell(currentRow, 2).Value = "相关文件";
+                worksheet.Cell(currentRow, 3).Value = "最高相似度";
+                worksheet.Cell(currentRow, 4).Value = "算法";
+                worksheet.Range(currentRow, 1, currentRow, 4).Style.Font.Bold = true;
+                worksheet.Range(currentRow, 1, currentRow, 4).Style.Fill.BackgroundColor = XLColor.LightGreen;
+                currentRow++;
+                
+                foreach (var group in centerGroups) {
+                    worksheet.Cell(currentRow, 1).Value = group.CenterFileName;
+                    worksheet.Cell(currentRow, 2).Value = string.Join("; ", group.RelatedFileNames);
+                    worksheet.Cell(currentRow, 3).Value = group.MaxSimilarity;
+                    worksheet.Cell(currentRow, 4).Value = group.Algorithm;
+                    currentRow++;
+                }
+            }
+            
+            // 添加分组显示查重结果
+            if (_allGroupedResults.TryGetValue(algo, out var groupedResult)) {
+                currentRow += 2;
+                worksheet.Cell(currentRow, 1).Value = "分组显示查重结果";
+                worksheet.Cell(currentRow, 1).Style.Font.Bold = true;
+                currentRow++;
+                
+                worksheet.Cell(currentRow, 1).Value = "分类";
+                worksheet.Cell(currentRow, 2).Value = "文件列表";
+                worksheet.Range(currentRow, 1, currentRow, 2).Style.Font.Bold = true;
+                worksheet.Range(currentRow, 1, currentRow, 2).Style.Fill.BackgroundColor = XLColor.LightYellow;
+                currentRow++;
+                
+                worksheet.Cell(currentRow, 1).Value = "无重复文件";
+                worksheet.Cell(currentRow, 2).Value = string.Join("; ", groupedResult.CleanFileNames);
+                currentRow++;
+                
+                worksheet.Cell(currentRow, 1).Value = "有重复文件";
+                worksheet.Cell(currentRow, 2).Value = string.Join("; ", groupedResult.DuplicateFileNames);
+            }
+            
+            // 自动调整列宽
+            worksheet.Columns().AdjustToContents();
+        }
+        
+        if (workbook.Worksheets.Count == 0) {
+            MessageBox.Show("未找到查重结果。请先使用不同算法运行查重分析。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+        
+        workbook.SaveAs(filePath);
+        MessageBox.Show($"结果已导出到: {filePath}\n已导出 {workbook.Worksheets.Count} 个算法的结果", "导出成功");
+    }
+
+    // 导出到CSV文件
+    private void ExportToCsv(string filePath, string project) {
+        var files = _store.ListFiles(project).ToList();
+        var content = new StringBuilder();
+
+        // 添加文件信息
+        content.AppendLine("文件列表:");
+        content.AppendLine("文件名,语言,大小(字节),导入时间");
+        foreach (var file in files)
+            content.AppendLine(
+                $"{file.FileName},{file.ProgrammingLanguage},{file.FileSizeBytes},{file.ImportedAt:yyyy-MM-dd HH:mm:ss}");
+
+        // 导出所有算法的查重结果
+        foreach (var algo in new[] { "Winnowing", "SimHash", "ShingleCosine" }) {
+            // 添加两两分组查重结果
+            if (_allPairResults.TryGetValue(algo, out var pairs) && pairs.Count > 0) {
+                content.AppendLine($"\n========== {algo} 算法 - 两两分组查重结果 ==========");
+                content.AppendLine("文件A,文件B,相似度,算法");
+                foreach (var pair in pairs)
+                    content.AppendLine($"{pair.FileNameA},{pair.FileNameB},{pair.Similarity:F4},{pair.Algorithm}");
+            }
+
+            // 添加中心分组查重结果
+            if (_allCenterResults.TryGetValue(algo, out var centerGroups) && centerGroups.Count > 0) {
+                content.AppendLine($"\n========== {algo} 算法 - 中心分组查重结果 ==========");
+                content.AppendLine("中心文件,相关文件,最高相似度,算法");
+                foreach (var group in centerGroups) {
+                    var relatedFiles = string.Join("; ", group.RelatedFileNames);
+                    content.AppendLine($"{group.CenterFileName},\"{relatedFiles}\",{group.MaxSimilarity:F4},{group.Algorithm}");
+                }
+            }
+
+            // 添加分组显示查重结果
+            if (_allGroupedResults.TryGetValue(algo, out var groupedResult)) {
+                content.AppendLine($"\n========== {algo} 算法 - 分组显示查重结果 ==========");
+                content.AppendLine("分类,文件列表");
+                var cleanFiles = string.Join("; ", groupedResult.CleanFileNames);
+                var duplicateFiles = string.Join("; ", groupedResult.DuplicateFileNames);
+                content.AppendLine($"无重复文件,\"{cleanFiles}\"");
+                content.AppendLine($"有重复文件,\"{duplicateFiles}\"");
+            }
+        }
+
+        // 如果没有任何结果，提示用户
+        if (_allPairResults.Count == 0) {
+            content.AppendLine("\n提示: 未找到查重结果。请先运行查重分析。");
+        }
+
+        File.WriteAllText(filePath, content.ToString(), Encoding.UTF8);
+        MessageBox.Show($"结果已导出到: {filePath}\n已导出 {_allPairResults.Count} 种算法的结果", "导出成功");
     }
 
     // 打开文件对比窗口，显示两个文件的详细diff

@@ -9,6 +9,7 @@
     <ItemGroup>
       <PackageReference Include="AvalonEdit" Version="6.3.1.120" />
       <PackageReference Include="DiffPlex.Wpf" Version="1.9.1" />
+      <PackageReference Include="ClosedXML" Version="0.104.1" />
     </ItemGroup>
 
     <ItemGroup>
