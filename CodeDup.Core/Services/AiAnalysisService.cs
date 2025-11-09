@@ -99,6 +99,22 @@ public class AiAnalysisService {
         }
     }
 
+    // 分析重复代码并生成报告（非流式版本，用于导出）
+    public async Task<string> AnalyzeDuplicateCode(DuplicateAnalysisResult result, int topN = 10) {
+        if (result.TotalFragments == 0) {
+            return "没有找到重复代码片段。";
+        }
+
+        var prompt = BuildPrompt(result, topN);
+        
+        try {
+            return await CallDeepSeekApi(prompt);
+        }
+        catch (Exception ex) {
+            return $"AI 分析失败：{ex.Message}\n请检查网络连接和 API Key 配置。";
+        }
+    }
+
     // 构建提示模板
     private string BuildPrompt(DuplicateAnalysisResult result, int topN) {
         var sb = new StringBuilder();

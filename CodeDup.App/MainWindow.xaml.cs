@@ -10,6 +10,7 @@ using CodeDup.Algorithms.Winnowing;
 using CodeDup.App.Services;
 using CodeDup.App.Views;
 using CodeDup.Core.Models;
+using CodeDup.Core.Services;
 using CodeDup.Core.Storage;
 using CodeDup.Text.Extractors;
 using Microsoft.VisualBasic;
@@ -421,7 +422,7 @@ public partial class MainWindow : Window {
     }
 
     // 导出查重结果到Excel文件
-    private void ExportResults_Click(object sender, RoutedEventArgs e) {
+    private async void ExportResults_Click(object sender, RoutedEventArgs e) {
         if (ProjectList.SelectedItem is not string project) {
             MessageBox.Show("请先选择项目");
             return;
@@ -455,7 +456,7 @@ public partial class MainWindow : Window {
                 var extension = Path.GetExtension(saveDialog.FileName).ToLower();
                 
                 if (extension == ".xlsx") {
-                    ExportToExcel(saveDialog.FileName, project);
+                    await ExportToExcel(saveDialog.FileName, project);
                 } else {
                     ExportToCsv(saveDialog.FileName, project);
                 }
@@ -467,7 +468,7 @@ public partial class MainWindow : Window {
     }
 
     // 导出到Excel文件，每个算法一个工作表
-    private void ExportToExcel(string filePath, string project) {
+    private async Task ExportToExcel(string filePath, string project) {
         var files = _store.ListFiles(project).ToList();
         
         using var workbook = new XLWorkbook();
@@ -575,8 +576,44 @@ public partial class MainWindow : Window {
             return;
         }
         
+        // 添加 AI 分析工作表
+        try {
+            var aiWorksheet = workbook.Worksheets.Add("AI分析");
+            aiWorksheet.Cell(1, 1).Value = "AI 重复代码分析报告";
+            aiWorksheet.Cell(1, 1).Style.Font.Bold = true;
+            aiWorksheet.Cell(1, 1).Style.Font.FontSize = 14;
+            
+            int aiRow = 3;
+            aiWorksheet.Cell(aiRow, 1).Value = "正在生成 AI 分析报告，请稍候...";
+            
+            // 执行重复代码分析
+            var fileIds = files.Select(f => f.Id).ToList();
+            var analyzer = new DuplicateCodeAnalyzer(_store);
+            var analysisResult = analyzer.AnalyzeDuplicateCode(project, fileIds, files, minOccurrences: 2, minLineCount: 3);
+            
+            // 调用 AI 分析
+            var aiService = new AiAnalysisService();
+            var aiAnalysis = await aiService.AnalyzeDuplicateCode(analysisResult, topN: 10);
+            
+            // 将 AI 分析结果写入工作表
+            aiWorksheet.Cell(aiRow, 1).Value = aiAnalysis;
+            aiWorksheet.Cell(aiRow, 1).Style.Alignment.WrapText = true;
+            aiWorksheet.Cell(aiRow, 1).Style.Alignment.Vertical = XLAlignmentVerticalValues.Top;
+            
+            // 设置列宽和行高
+            aiWorksheet.Column(1).Width = 100;
+            aiWorksheet.Row(aiRow).Height = 400;
+            
+            // 将 AI 分析工作表移到最后
+            aiWorksheet.Position = workbook.Worksheets.Count;
+        }
+        catch (Exception ex) {
+            // AI 分析失败时，仍然保存其他结果
+            MessageBox.Show($"AI 分析失败: {ex.Message}\n其他结果仍会正常导出。", "警告", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+        
         workbook.SaveAs(filePath);
-        MessageBox.Show($"结果已导出到: {filePath}\n已导出 {workbook.Worksheets.Count} 个算法的结果", "导出成功");
+        MessageBox.Show($"结果已导出到: {filePath}\n已导出 {workbook.Worksheets.Count} 个工作表（包含 AI 分析）", "导出成功");
     }
 
     // 导出到CSV文件
